@@ -11,6 +11,7 @@ pylint
 
 # External database
 firebase-admin
+requests
 
 # Reading from .env (.env MUST BE INSIDE upmed-appointment/)
 python-dotenv

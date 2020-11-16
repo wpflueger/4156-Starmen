@@ -22,6 +22,7 @@
 venv
 env
 
+
 # cache
 **/__pycache__
 .idea
@@ -33,3 +34,5 @@ yarn-error.log*
 # firebase
 *upmed-starmen-firebase-
 *decrypted_cert.json
+/upmed-api/tst/api/hcp_test/ENV_DIR/
+/enev/

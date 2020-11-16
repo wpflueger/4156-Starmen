@@ -1,5 +1,6 @@
 import unittest
-
+import os, sys
+sys.path.append('../../src/')
 import requests
 from util.firebase.db import Database
 from models.patient import Patient
@@ -10,6 +11,28 @@ from models.hours import Hours
 from models.enums import Status
 from util.util import Auth
 import time
+
+
+"""
+Unittest
+
+--- Absolute Imports ---
+import requests
+from util.firebase.db import Database
+from models.patient import Patient
+from models.hcp import HCP
+from models.appointment import Appointment
+from models.day import Day
+from models.hours import Hours
+from models.enums import Status
+from util.util import Auth
+import time
+
+---Relative Imports ----
+
+
+
+"""
 
 
 def create_dummy_data():
