@@ -1,10 +1,25 @@
 from .strings import DoctorId, PatientId, AppointmentId
 from .hours import Hours
 from typing import List, Optional
+
+"""
+HCP Data Model
+
+---Heroku Imports----
+from .strings import DoctorId, PatientId, AppointmentId
+from .hours import Hours
+from typing import List, Optional
 import sys
 import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '..'))
+
+
+---Relative Imports----
+from .strings import DoctorId, PatientId, AppointmentId
+from .hours import Hours
+from typing import List, Optional
+"""
 
 
 class HCP:

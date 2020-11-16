@@ -4,6 +4,9 @@ import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '..'))
 
+"""Strings Model
+    """
+
 
 DoctorId = Text
 PatientId = Text

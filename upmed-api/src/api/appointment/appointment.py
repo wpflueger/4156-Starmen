@@ -1,7 +1,13 @@
-from flask import Blueprint, request, jsonify, make_response
-from util.firebase.db import Database
-from util.util import Auth
-from models.appointment import Appointment
+from flask import Blueprint, request, jsonify, make_response, json
+from ....src.util.firebase.db import Database
+from ....src.util.util import Auth
+from ....src.models.patient import Patient
+from ....src.models.hcp import HCP
+from ....src.models.health_event import HealthEvent
+from ....src.models.hours import Hours
+from ....src.models.day import Day
+from ....src.util.util import Twilio
+from ....src.models.appointment import Appointment
 
 """
 Appointment API
@@ -12,7 +18,17 @@ from util.firebase.db import Database
 from util.util import Auth
 from models.appointment import Appointment
 
----
+---Relative Imports----
+from flask import Blueprint, request, jsonify, make_response, json
+from ....src.util.firebase.db import Database
+from ....src.util.util import Auth
+from ....src.models.patient import Patient
+from ....src.models.hcp import HCP
+from ....src.models.health_event import HealthEvent
+from ....src.models.hours import Hours
+from ....src.models.day import Day
+from ....src.util.util import Twilio
+from ....src.models.appointment import Appointment
 
 """
 
@@ -58,7 +74,7 @@ def get_by_token():
             elements = appointmentId.split(',')
 
             user_id_verified = False
-            if (utype == "HCP") and (str(pid) == str(elements[1])) | | elif (utype == "PATIENT") and (str(pid) == str(elements[0])):
+            if (utype == "HCP") and (str(pid) == str(elements[1])) or (utype == "PATIENT") and (str(pid) == str(elements[0])):
                 appointmentId = post_data.get('appointmentId')
                 appointments_output = appointmentsdb.document(
                     str(appointmentId)).get().to_dict()
@@ -263,7 +279,7 @@ def delete_appointment():
             patient_id = str(elements[0])
 
             user_id_verified = False
-            if (utype == "HCP") and (str(pid) == doctor_id) | | (utype == "PATIENT") and (str(pid) == patient_id):
+            if (utype == "HCP") and (str(pid) == doctor_id) or (utype == "PATIENT") and (str(pid) == patient_id):
                 user_id_verified = True
 
             if user_id_verified:

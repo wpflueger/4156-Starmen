@@ -1,3 +1,13 @@
+from ..util import SuperBlueprint
+
+from .hcp import hcp_endpoints
+from .patient import patient_endpoints
+from .appointment import appointment_endpoints
+
+
+"""
+Register appointment blueprints
+---Heroku Imports----
 from .appointment import appointment_endpoints
 from .patient import patient_endpoints
 from .hcp import hcp_endpoints
@@ -8,8 +18,14 @@ from os.path import join
 sys.path.append(join(os.getcwd(), '..'))
 
 
-"""
-Register appointment blueprints
+
+---Relative Imports-----
+from ..util import SuperBlueprint
+
+from .hcp import hcp_endpoints
+from .patient import patient_endpoints
+from .appointment import appointment_endpoints
+
 """
 api_endpoints = SuperBlueprint('appointment', __name__, url_prefix='')
 
