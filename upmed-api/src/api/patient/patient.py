@@ -1,19 +1,12 @@
-import sys, os
+from models import Patient, HCP, Hours, Day
+from util.util import Auth
+from util.firebase.db import Database
+from flask import Blueprint, request, jsonify, make_response, json
+import sys
+import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '../..'))
 
-from flask import Blueprint, request, jsonify, make_response
-from util.firebase.db import Database
-from util.util import Auth
-from models import Patient, HCP, Hours, Day
-# from flask import Blueprint, request, jsonify, make_response, json
-# from ....src.util.firebase.db import Database
-# from ....src.util.util import Auth
-# from ....src.models.patient import Patient
-# from ....src.models.hcp import HCP
-# from ....src.models.health_event import HealthEvent
-# from ....src.models.hours import Hours
-# from ....src.models.day import Day
 
 patient_endpoints = Blueprint('patient', __name__)
 pdb = Database()
@@ -54,18 +47,18 @@ def signup():
     post_data = request.get_json()
     try:
         patient = Patient(
-            id= post_data.get('id'),
-            firstName = post_data.get('firstName'),
-            lastName = post_data.get('lastName'),
-            phone = "0000000000",
-            email = post_data.get('email'),
-            dateOfBirth = post_data.get('dateOfBirth'),
-            sex = post_data.get('sex'),
-            profilePicture = '',
-            height = post_data.get('height'),
-            weight = post_data.get('weight'),
-            drinker = post_data.get('drinker'),
-            smoker = post_data.get('smoker'),
+            id=post_data.get('id'),
+            firstName=post_data.get('firstName'),
+            lastName=post_data.get('lastName'),
+            phone="0000000000",
+            email=post_data.get('email'),
+            dateOfBirth=post_data.get('dateOfBirth'),
+            sex=post_data.get('sex'),
+            profilePicture='',
+            height=post_data.get('height'),
+            weight=post_data.get('weight'),
+            drinker=post_data.get('drinker'),
+            smoker=post_data.get('smoker'),
             calendar=[],
             health=[],
             doctors=[]
@@ -98,17 +91,17 @@ def signup():
 
         })
         auth_token = auth.encode_auth_token(patient.id, utype)
-        responseObject = {
+        response_object = {
             'id': patient.id,
             'token': auth_token.decode()
         }
-        return make_response(jsonify(responseObject)), 201
+        return make_response(jsonify(response_object)), 201
     except Exception as e:
-        responseObject = {
+        response_object = {
             'status': 'fail',
             'message': f'Some error, {e} occurred. Please try again.'
         }
-        return make_response(jsonify(responseObject)), 401
+        return make_response(jsonify(response_object)), 401
 
 
 @patient_endpoints.route('/delete', methods=['POST'])
@@ -136,7 +129,7 @@ def getbytoken():
         patient = pat.document(str(pid)).get().to_dict()
         # print(patient)
         resp = Patient(
-            id= pid,
+            id=pid,
             firstName=patient['firstName'],
             lastName=patient['lastName'],
             phone=patient['phone'],
@@ -153,7 +146,7 @@ def getbytoken():
             health=patient['health']
         )
 
-        responseObject = {
+        response_object = {
             "id": resp.id,
             "firstName": resp.firstName,
             "lastName": resp.lastName,
@@ -167,18 +160,18 @@ def getbytoken():
             "drinker": resp.drinker,
             "smoker": resp.smoker,
             "health": resp.health
-            }
-        return make_response(jsonify(responseObject)), 200
-    else:
-        responseObject = {
-            'status': 'fail',
-            'message': 'Provide a valid auth token.'
         }
-        return make_response(jsonify(responseObject)), 401
+        return make_response(jsonify(response_object)), 200
+    else:
+        response_object = {
+            'status': 'fail',
+            'message': 'Ivalid token. Provide a valid auth token.'
+        }
+        return make_response(jsonify(response_object)), 401
 
 
 @patient_endpoints.route('/getRecords', methods=['POST'])
-def getRecords():
+def get_records():
     """
         Based on the supplied patient JWT the health records
         for that patient will be accessed.
@@ -206,22 +199,21 @@ def getRecords():
             doctors=patient['doctors'],
             health=patient['health']
         )
-        responseObject = []
+        response_object = []
         for i in resp.health:
-            responseObject.append(i)
+            response_object.append(i)
 
-
-        return make_response(jsonify(responseObject)), 200
+        return make_response(jsonify(response_object)), 200
     else:
-        responseObject = {
+        response_object = {
             'status': 'fail',
-            'message': 'Provide a valid auth token.'
+            'message': 'Invalid. Provide a valid auth token.'
         }
-        return make_response(jsonify(responseObject)), 401
+        return make_response(jsonify(response_object)), 401
 
 
 @patient_endpoints.route('/editProfile', methods=['POST'])
-def editProfile():
+def edit_profile():
     auth_token = request.get_json().get('token')
     if auth_token:
         pid, utype = Auth.decode_auth_token(auth_token)
@@ -269,11 +261,12 @@ def editProfile():
         }
         return make_response(jsonify(res)), 200
     else:
-        responseObject = {
+        response_object = {
             'status': 'fail',
             'message': 'Provide a valid auth token.'
         }
-        return make_response(jsonify(responseObject)), 401
+        return make_response(jsonify(response_object)), 401
+
 
 @patient_endpoints.route('/getHCPs', methods=['POST'])
 def gethcps():
@@ -370,7 +363,7 @@ def gethcps():
                 }
             }
 
-            responseObject = {
+            response_object = {
                 "id": resp.id,
                 "firstName": resp.firstName,
                 "lastName": resp.lastName,
@@ -382,31 +375,30 @@ def gethcps():
                 "title": resp.title,
                 "hours": hours,
                 "patients": resp.patients
-                }
+            }
 
             entry = {
-                i: responseObject
+                i: response_object
             }
             # print(i)
             results.update(entry)
             # print(res)
 
-
         return make_response(jsonify(results)), 200
     else:
-        responseObject = {
+        response_object = {
             'status': 'fail',
-            'message': 'Provide a valid auth token.'
+            'message': 'Token Invalid. Provide a valid auth token.'
         }
-        return make_response(jsonify(responseObject)), 401
+        return make_response(jsonify(response_object)), 401
+
 
 @patient_endpoints.route('/getAll', methods=['POST'])
-def getAll():
+def get_all():
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
         pats = pat.stream()
-        # print(hcps)
         pats_return = []
         for patient in pats:
 
@@ -424,8 +416,8 @@ def getAll():
             pats_return.append(pat_obj)
         return jsonify(pats_return), 200
     else:
-        responseObject = {
+        response_object = {
             'status': 'fail',
             'message': 'Provide a valid auth token.'
         }
-        return make_response(jsonify(responseObject)), 401
+        return make_response(jsonify(response_object)), 401

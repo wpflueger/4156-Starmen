@@ -1,12 +1,12 @@
-import sys, os
+from .health_event import HealthEvent
+from .strings import DoctorId, PatientId, AppointmentId
+from .enums import Status
+from typing import List, Optional
+import sys
+import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '..'))
 
-from typing import List, Optional
-
-from .enums import Status
-from .strings import DoctorId, PatientId, AppointmentId
-from .health_event import HealthEvent
 
 class Patient:
     id: PatientId

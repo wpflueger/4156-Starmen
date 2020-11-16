@@ -1,8 +1,9 @@
-import sys, os
+from .day import Day
+import sys
+import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '..'))
 
-from .day import Day
 
 class Hours:
     sunday: Day
@@ -32,7 +33,7 @@ class Hours:
         self.saturday = saturday
 
     def inc(self):
-        res=[]
+        res = []
         res.append(list(self.sunday))
         res.append(list(self.monday))
         res.append(list(self.tuesday))
