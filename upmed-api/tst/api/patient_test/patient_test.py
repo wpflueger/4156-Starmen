@@ -1,6 +1,5 @@
 import unittest
-import os, sys
-sys.path.append('../../src/')
+
 import requests
 from util.firebase.db import Database
 from models.patient import Patient
@@ -11,28 +10,6 @@ from models.hours import Hours
 from models.enums import Status
 from util.util import Auth
 import time
-
-
-"""
-Unittest
-
---- Absolute Imports ---
-import requests
-from util.firebase.db import Database
-from models.patient import Patient
-from models.hcp import HCP
-from models.appointment import Appointment
-from models.day import Day
-from models.hours import Hours
-from models.enums import Status
-from util.util import Auth
-import time
-
----Relative Imports ----
-
-
-
-"""
 
 
 def create_dummy_data():
@@ -86,7 +63,7 @@ def create_dummy_data():
     return dummy_hcp, dummy_patient, dummy_appointment
 
 
-class HCPTestCase(unittest.TestCase):
+class PatientTestCase(unittest.TestCase):
     auth = Auth()
     pdb = Database()
     hcp_db = pdb.getHCP()
@@ -141,52 +118,73 @@ class HCPTestCase(unittest.TestCase):
     patient_token = auth_token.decode()
 
     def signup_test(self):
-        week = []
-        for i in range(0, 7):
-            week.append(Day(startTime=540, endTime=1020))
-        schedule = Hours(sunday=week[0], monday=week[1], tuesday=week[2], wednesday=week[3],
-                         thursday=week[4], friday=week[5], saturday=week[6])
-        payload = {'id': "ap0000",
-                   'firstName': "Athena",
-                   'lastName': "Pang",
-                   'phone': '"9175587800"',
-                   'email': "ap0000@columbia.edu",
-                   'specialty': "Accident and Emergency",
-                   'hours': schedule,
-                   'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
+        payload = {'id': "jb0000",
+                   'firstName': "Joe",
+                   'lastName': "Biden",
+                   'phone': '"9175587000"',
+                   'email': "joebiden@democrat.edu",
+                   'dateOfBirth': "1942-11-20",
+                   'sex': 'M',
+                   'height': 183,
+                   'weight': 60,
+                   'drinker': 0,
+                   'smoker': 0}
 
-        response = requests.get('http://127.0.0.1:8080/hcp/signUp', params=payload)
+        response = requests.get('http://127.0.0.1:8080/patient/signUp', params=payload)
         self.assertEqual(201, response.status_code)
-        self.assertEqual({'id': 'ap0000'}, response.id)
+        self.assertEqual({'id': 'jb0000'}, response.id)
 
     def login_test(self):
-        payload = {'id': "hw2735",
-                   'email': "hw2735@columbia.edu"}
-        response = requests.get('http://127.0.0.1:8080/hcp/logIn', params=payload)
+        payload = {'id': "jb0000",
+                   'email': "joebiden@democrat.edu"}
+        response = requests.get('http://127.0.0.1:8080/patient/logIn', params=payload)
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'googleId': 'hw2735'}, response.googleId)
+        self.assertEqual({'id': 'jb0000'}, response.id)
 
-    def set_health_event_test(self):
-        payload = {'token': HCPTestCase.hcp_token,
-                   'id': 'aoc1989',
-                   'date': time.time(),
-                   'event': 'schizophrenia',
-                   'remarks': 'Strong violent tendency',
-                   'status': 0}
-        response = requests.get('http://127.0.0.1:8080/hcp/setRecords', params=payload)
+    def getbytoken_test(self):
+        payload = {'token': PatientTestCase.patient_token}
+        response = requests.get('http://127.0.0.1:8080/patient/getbytoken', params=payload)
         self.assertEqual(201, response.status_code)
 
-    def notify_test(self):
-        payload = {'token': HCPTestCase.hcp_token,
-                   'id': 'aoc1989,hw2735,1605505365'}
-        response = requests.get('http://127.0.0.1:8080/hcp/notify', params=payload)
+    def getRecords_test(self):
+        payload = {'token': PatientTestCase.patient_token}
+        response = requests.get('http://127.0.0.1:8080/patient/notify', params=payload)
         self.assertEqual(200, response.status_code)
 
     def remove_test(self):
-        payload = {'id': 'ap0000'}
-        response = requests.get('http://127.0.0.1:8080/hcp/delete', params=payload)
+        payload = {'id': 'jb0000'}
+        response = requests.get('http://127.0.0.1:8080/patient/delete', params=payload)
         self.assertEqual(200, response.status_code)
 
+    def editProfile_test(self):
+        payload = {'token': PatientTestCase.patient_token,
+                   'firstName': "Nansi",
+                   'lastName': "Pelosi",
+                   'phone': "0000000000",
+                   'email': "np@democrat.com",
+                   'dateOfBirth': "1989-10-13",
+                   'sex': 'F',
+                   'profilePicture': '',
+                   'height': 150,
+                   'weight': 60,
+                   'drinker': Status.NEVER,
+                   'smoker': Status.NEVER,
+                   'calendar': [],
+                   'health': [],
+                   'doctors': ["hw2735"]
+                   }
+        response = requests.get('http://127.0.0.1:8080/patient/editProfile', params=payload)
+        self.assertEqual(200, response.status_code)
+
+    def gethcps_test(self):
+        payload = {'token': PatientTestCase.patient_token}
+        response = requests.get('http://127.0.0.1:8080/patient/getHCPs', params=payload)
+        self.assertEqual(200, response.status_code)
+
+    def get_all_test(self):
+        payload = {'token': PatientTestCase.patient_token}
+        response = requests.get('http://127.0.0.1:8080/patient/getAll', params=payload)
+        self.assertEqual(200, response.status_code)
 
 if __name__ == '__main__':
     unittest.main()
