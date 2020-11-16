@@ -1,3 +1,15 @@
+from flask import Blueprint, request, jsonify, make_response, json
+from ....src.util.firebase.db import Database
+from ....src.util.util import Auth
+from ....src.models.patient import Patient
+from ....src.models.hcp import HCP
+from ....src.models.health_event import HealthEvent
+from ....src.models.hours import Hours
+from ....src.models.day import Day
+
+"""
+Patient API Endpoints
+------ Heroku Imports-----
 from models import Patient, HCP, Hours, Day
 from util.util import Auth
 from util.firebase.db import Database
@@ -7,8 +19,17 @@ import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '../..'))
 
-"""
-Patient API Endpoints
+
+----Relative Imports-----
+from flask import Blueprint, request, jsonify, make_response, json
+from ....src.util.firebase.db import Database
+from ....src.util.util import Auth
+from ....src.models.patient import Patient
+from ....src.models.hcp import HCP
+from ....src.models.health_event import HealthEvent
+from ....src.models.hours import Hours
+from ....src.models.day import Day
+
 """
 
 

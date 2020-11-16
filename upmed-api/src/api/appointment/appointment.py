@@ -1,10 +1,20 @@
-"""
-Appointment API
-"""
 from flask import Blueprint, request, jsonify, make_response
 from util.firebase.db import Database
 from util.util import Auth
 from models.appointment import Appointment
+
+"""
+Appointment API
+
+----Heroku Imports----
+from flask import Blueprint, request, jsonify, make_response
+from util.firebase.db import Database
+from util.util import Auth
+from models.appointment import Appointment
+
+---
+
+"""
 
 pdb = Database()
 hcp_db = pdb.getHCP()
