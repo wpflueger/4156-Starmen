@@ -1,14 +1,13 @@
 import unittest
 from models.appointment import Appointment
-from datetime import datetime
+import time
 
 
 class AppointmentModelTestCase(unittest.TestCase):
     def test_success_build_appointment(self):
-        date = datetime.fromisoformat('2017-01-01T12:30:59.000000')
         correct_test_appointment = Appointment(
-                    appointment_id="1",
-                    appointment_date=date,
+                    id="1",
+                    date=int(time.time()),
                     duration=30,
                     doctor=str(100),
                     patient=str(200),
