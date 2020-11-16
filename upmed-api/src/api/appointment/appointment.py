@@ -1,3 +1,6 @@
+"""
+Appointment API
+"""
 from flask import Blueprint, request, jsonify, make_response
 from util.firebase.db import Database
 from util.util import Auth
@@ -14,6 +17,12 @@ appointment_endpoints = Blueprint('appointment', __name__)
 
 @appointment_endpoints.route('/')
 def root():
+    """
+    Deafault Route
+
+    Returns:
+        reponse: string
+    """
     return "appointment root"
 
 

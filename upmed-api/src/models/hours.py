@@ -41,10 +41,3 @@ class Hours:
         res.append(list(self.thursday))
         res.append(list(self.friday))
         res.append(list(self.saturday))
-        # return f"sunday: {repr(self.sunday)}" \
-        #        f"monday: {repr(self.monday)}" \
-        #        f"tuesday: {repr(self.tuesday)}" \
-        #        f"wednesday: {repr(self.wednesday)}" \
-        #        f"thursday: {repr(self.thursday)}" \
-        #        f"friday: {repr(self.friday)}" \
-        #        f"saturday: {repr(self.saturday)}"

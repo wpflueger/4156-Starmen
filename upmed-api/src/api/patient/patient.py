@@ -7,6 +7,10 @@ import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '../..'))
 
+"""
+Patient API Endpoints
+"""
+
 
 patient_endpoints = Blueprint('patient', __name__)
 pdb = Database()
@@ -17,11 +21,21 @@ hcpdb = pdb.getHCP()
 
 @patient_endpoints.route('/', methods=['POST'])
 def root():
-    return "GO TO AN ENDPOINT"
+    """Default api route
+
+    Returns:
+        Response: string
+    """
+    return "GO TO AN ENDPOINT", 404
 
 
 @patient_endpoints.route('/logIn', methods=['POST'])
 def login():
+    """Login existing patient
+
+    Returns:
+        Response: JSON
+    """
     try:
         pid = request.json['id']
         email = request.json['email']
@@ -44,6 +58,11 @@ def login():
 
 @patient_endpoints.route('/signUp', methods=['POST'])
 def signup():
+    """Create new Patient object and record
+
+    Returns:
+        Response: JSON
+    """
     post_data = request.get_json()
     try:
         patient = Patient(
@@ -122,6 +141,11 @@ def remove():
 
 @patient_endpoints.route('/getByToken', methods=['POST'])
 def getbytoken():
+    """Get Patients by token
+
+    Returns:
+        Response: JSON
+    """
     # get the auth token
     auth_token = request.get_json().get('token')
     if auth_token:
@@ -214,6 +238,11 @@ def get_records():
 
 @patient_endpoints.route('/editProfile', methods=['POST'])
 def edit_profile():
+    """edit Patient Profile
+
+    Returns:
+        Response: JSON
+    """
     auth_token = request.get_json().get('token')
     if auth_token:
         pid, utype = Auth.decode_auth_token(auth_token)
@@ -270,6 +299,11 @@ def edit_profile():
 
 @patient_endpoints.route('/getHCPs', methods=['POST'])
 def gethcps():
+    """Get Patients's HCPs
+
+    Returns:
+        Response: JSON
+    """
     auth_token = request.get_json().get('token')
     if auth_token:
         pid, utype = Auth.decode_auth_token(auth_token)
@@ -395,6 +429,11 @@ def gethcps():
 
 @patient_endpoints.route('/getAll', methods=['POST'])
 def get_all():
+    """Get Patients
+
+    Returns:
+        Response: JSON
+    """
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)

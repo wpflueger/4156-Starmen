@@ -5,7 +5,6 @@ from flask import Flask
 from flask_cors import CORS
 
 from api import api_endpoints
-import os
 
 """
 Create app and register blueprints

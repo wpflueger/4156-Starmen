@@ -28,6 +28,11 @@ def root():
 
 @hcp_endpoints.route('/logIn', methods=['POST'])
 def login():
+    """HCP Logins
+
+    Returns:
+            Response: JSON
+    """
     try:
         pid = request.json['id']
         email = request.json['email']
@@ -49,7 +54,11 @@ def login():
 
 @hcp_endpoints.route('/signUp', methods=['POST'])
 def signup():
+    """New HCP creates profile
 
+    Returns:
+            Response: JSON
+    """
     post_data = request.get_json()
     schedule = make_week()
     try:
@@ -190,7 +199,7 @@ def signup():
 @hcp_endpoints.route('/delete', methods=['POST'])
 def remove():
     """
-        delete() : Delete a document from Firestore collection.
+            delete() : Delete a document from Firestore collection.
     """
     post_data = request.get_json()
     try:
@@ -204,7 +213,11 @@ def remove():
 
 @hcp_endpoints.route('/getByToken', methods=['POST'])
 def getbytoken():
-    # get the auth token
+	"""Get HCP by token
+
+	Returns:
+		Response: JSON
+	"""
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
@@ -410,6 +423,16 @@ def set_health_event():
 
 @hcp_endpoints.route('/notify', methods=['POST'])
 def notify():
+	"""Notify patient of appoint
+
+	Request{
+		token: string
+		appointment_d: string
+	}
+
+	Returns:
+		[type]: [description]
+	"""
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
@@ -453,7 +476,7 @@ def notify():
                 message = client.messages \
                     .create(
                         body=f"Hi {resp.firstName} you have an appointment at {appointment.startDate} join at "
-                             f"{appointment.videoUrl}",
+                        f"{appointment.videoUrl}",
                         from_='+19036182297',
                         to=f'+1{str(resp.phone).replace("", "")}'
                     )
@@ -482,6 +505,11 @@ def notify():
 
 @hcp_endpoints.route('/editProfile', methods=['POST'])
 def edit_hcp_profile():
+	"""Edit existing HCP profile
+
+	Returns:
+		Response: JSON
+	"""
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
@@ -760,6 +788,11 @@ def set_health_events():
 
 @hcp_endpoints.route('/getAll', methods=['POST'])
 def get_all():
+	"""Get all HCPs
+
+	Returns:
+		List[HCP]
+	"""
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
@@ -788,6 +821,11 @@ def get_all():
 
 
 def make_week():
+	"""Makes a blank schedule
+
+	Returns:
+		Returns Hours object
+	"""
     week = []
     for _ in range(0, 7):
         week.append(Day(
