@@ -1,10 +1,42 @@
-from models import HCP, Hours, Day, HealthEvent, Patient, Status, Appointment
+from flask import Blueprint, request, jsonify, make_response
+from ....src.util.firebase.db import Database
+from ....src.util.util import Auth, Twilio
+from ....src.models.hcp import HCP
+from ....src.models.hours import Hours
+from ....src.models.day import Day
+from ....src.models.health_event import HealthEvent
+from ....src.models.patient import Patient
+from ....src.models.enums import Status
+from ....src.models.appointment import Appointment
+
+"""HCP API Endpoints
+
+	----Heroku Imports----
+	from models import HCP, Hours, Day, HealthEvent, Patient, Status, Appointment
 from util import Database, Auth, Twilio
 from flask import Blueprint, request, jsonify, make_response
 import sys
 import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '../..'))
+
+
+
+---- Relative Imports-----
+from flask import Blueprint, request, jsonify, make_response
+from ....src.util.firebase.db import Database
+from ....src.util.util import Auth, Twilio
+from ....src.models.hcp import HCP
+from ....src.models.hours import Hours
+from ....src.models.day import Day
+from ....src.models.health_event import HealthEvent
+from ....src.models.patient import Patient
+from ....src.models.enums import Status
+from ....src.models.appointment import Appointment
+
+	Returns:
+		HTTP Response: JSON
+"""
 
 # Setup HCP and Patient Document Collections
 db = Database()
@@ -213,32 +245,16 @@ def remove():
 
 @hcp_endpoints.route('/getByToken', methods=['POST'])
 def getbytoken():
-	"""Get HCP by token
+    """Get HCP by token
 
-	Returns:
-		Response: JSON
-	"""
+    Returns: Response: JSON
+    """
+    # Get Auth Token
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
         if utype == "HCP":
-            week = []
-            for _ in range(0, 7):
-                week.append(Day(
-                    startTime=-1,
-                    endTime=-1,
-                )
-                )
-
-            schedule = Hours(
-                sunday=week[0],
-                monday=week[1],
-                tuesday=week[2],
-                wednesday=week[3],
-                thursday=week[4],
-                friday=week[5],
-                saturday=week[6]
-            )
+            schedule = make_week()
             hcp = hcpdb.document(hid).get().to_dict()
             resp = HCP(
                 id=hcp['id'],
@@ -423,16 +439,15 @@ def set_health_event():
 
 @hcp_endpoints.route('/notify', methods=['POST'])
 def notify():
-	"""Notify patient of appoint
-
-	Request{
+    """
+    Notify patient of appoint
+    	Request{
 		token: string
 		appointment_d: string
 	}
+    :return: Response
+    """
 
-	Returns:
-		[type]: [description]
-	"""
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
@@ -444,8 +459,7 @@ def notify():
                     str(appointment_id)).get().to_dict()
                 appointment = Appointment(
                     id=appointment_resp['id'],
-                    startDate=appointment_resp['startDate'],
-                    endDate=appointment_resp['endDate'],
+                    date=appointment_resp['date'],
                     doctor=appointment_resp['doctor'],
                     patient=appointment_resp['patient'],
                     subject=appointment_resp['subject'],
@@ -505,7 +519,8 @@ def notify():
 
 @hcp_endpoints.route('/editProfile', methods=['POST'])
 def edit_hcp_profile():
-	"""Edit existing HCP profile
+    """
+    Edit existing HCP profile
 
 	Returns:
 		Response: JSON
@@ -672,6 +687,10 @@ def edit_hcp_profile():
 
 @hcp_endpoints.route('/getPatients', methods=['POST'])
 def getpatients():
+    """
+    Get Patient from token
+    :return: Patient
+    """
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
@@ -788,11 +807,14 @@ def set_health_events():
 
 @hcp_endpoints.route('/getAll', methods=['POST'])
 def get_all():
-	"""Get all HCPs
+    """
+	Get all HCPs
 
 	Returns:
 		List[HCP]
+	:return:
 	"""
+
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
@@ -821,11 +843,11 @@ def get_all():
 
 
 def make_week():
-	"""Makes a blank schedule
+    """
+    Makes a blank schedule
+    :return: Hours object
+    """
 
-	Returns:
-		Returns Hours object
-	"""
     week = []
     for _ in range(0, 7):
         week.append(Day(

@@ -4,6 +4,9 @@ import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '..'))
 
+"""Enums Data Model
+    """
+
 
 class Status(Enum):
     ACTIVE = 0
