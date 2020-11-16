@@ -164,5 +164,6 @@ class HCPTestCase(unittest.TestCase):
         response = requests.get('http://127.0.0.1:8080/hcp/delete', params=payload)
         self.assertEqual(200, response.status_code)
 
+
 if __name__ == '__main__':
     unittest.main()
