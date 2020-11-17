@@ -897,3 +897,32 @@ def make_week():
         saturday=week[6]
     )
     return schedule
+
+
+@hcp_endpoints.route('/setProfilePicture', methods=['POST'])
+def set_profile_picture():
+    """
+    Set HCP Profile Picture
+
+    Returns: Response: JSON
+    """
+    # Get Auth Token
+    auth_token = request.get_json().get('token')
+    if auth_token:
+        hid, utype = Auth.decode_auth_token(auth_token)
+        # hcp = hcpdb.document(hid).get().to_dict()
+        pic = request.get_json().get('profilePicture')
+        hcpdb.document(str(hid)).update({
+            "profilePicture": pic
+        })
+        response_object = {
+            "Success": True,
+            "profilePicture": pic
+        }
+        return make_response(jsonify(response_object)), 200
+    else:
+        response_object = {
+            'status': 'fail',
+            'message': "invalid_token"
+        }
+        return make_response(jsonify(response_object)), 401

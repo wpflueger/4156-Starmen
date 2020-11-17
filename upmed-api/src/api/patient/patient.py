@@ -484,3 +484,34 @@ def get_all():
             'message': 'Provide a valid auth token.'
         }
         return make_response(jsonify(response_object)), 401
+
+
+@patient_endpoints.route('/setProfilePicture', methods=['POST'])
+def set_profile_picture():
+    """
+    Set Patient Profile Picture
+
+    Returns: Response: JSON
+    """
+    # Get Auth Token
+    auth_token = request.get_json().get('token')
+    if auth_token:
+        pid, utype = Auth.decode_auth_token(auth_token)
+        # hcp = hcpdb.document(hid).get().to_dict()
+        pic = request.get_json().get('profilePicture')
+        print(pid)
+        print(pic)
+        pat.document(str(pid)).update({
+            "profilePicture": pic
+        })
+        response_object = {
+            "Success": True,
+            "profilePicture": pic
+        }
+        return make_response(jsonify(response_object)), 200
+    else:
+        response_object = {
+            'status': 'fail',
+            'message': "invalid_token"
+        }
+        return make_response(jsonify(response_object)), 401
