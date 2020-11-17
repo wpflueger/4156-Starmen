@@ -64,6 +64,30 @@ class AppointmentApiTestCase(unittest.TestCase):
     patient_db = pdb.getPatients()
     appointmentsdb = pdb.getAppointments()
     dummy_hcp, dummy_patient = create_dummy_data()
+    hours = []
+    time = []
+    time.append(dummy_hcp.hours.sunday.startTime)
+    time.append(dummy_hcp.hours.sunday.endTime)
+    hours.append(str(time))
+    time[0] = dummy_hcp.hours.monday.startTime
+    time[1] = dummy_hcp.hours.monday.endTime
+    hours.append(str(time))
+    time[0] = dummy_hcp.hours.tuesday.startTime
+    time[1] = dummy_hcp.hours.tuesday.endTime
+    hours.append(str(time))
+    time[0] = dummy_hcp.hours.wednesday.startTime
+    time[1] = dummy_hcp.hours.wednesday.endTime
+    hours.append(str(time))
+    time[0] = dummy_hcp.hours.thursday.startTime
+    time[1] = dummy_hcp.hours.thursday.endTime
+    hours.append(str(time))
+    time[0] = dummy_hcp.hours.friday.startTime
+    time[1] = dummy_hcp.hours.friday.endTime
+    hours.append(str(time))
+    time[0] = dummy_hcp.hours.saturday.startTime
+    time[1] = dummy_hcp.hours.saturday.endTime
+    hours.append(str(time))
+
     hcp_db.document(dummy_hcp.id).set({
         "id": dummy_hcp.id,
         "firstName": dummy_hcp.firstName,
@@ -74,7 +98,7 @@ class AppointmentApiTestCase(unittest.TestCase):
         "calendar": dummy_hcp.calendar,
         "specialty": dummy_hcp.specialty,
         "title": dummy_hcp.title,
-        "hours": dummy_hcp,
+        "hours": hours,
         "patients": dummy_hcp.patients
     })
     patient_db.document(dummy_patient.id).set({
@@ -88,8 +112,8 @@ class AppointmentApiTestCase(unittest.TestCase):
         "profilePicture": dummy_patient.profilePicture,
         "height": dummy_patient.height,
         "weight": dummy_patient.weight,
-        "drinker": dummy_patient.drinker,
-        "smoker": dummy_patient.smoker,
+        "drinker": dummy_patient.drinker.value,
+        "smoker": dummy_patient.smoker.value,
         "calendar": dummy_patient.calendar,
         "health": dummy_patient.health,
         "doctors": dummy_patient.doctors
@@ -101,7 +125,7 @@ class AppointmentApiTestCase(unittest.TestCase):
     auth_token = auth.encode_auth_token(dummy_patient.id, "PATIENT")
     patient_token = auth_token.decode()
 
-    def createAppointment_test(self, hcp_token=hcp_token):
+    def test_createAppointment_test(self, hcp_token=hcp_token):
         timpstamp = time.time()
         payload = {
             'token': hcp_token,
@@ -112,32 +136,35 @@ class AppointmentApiTestCase(unittest.TestCase):
             'subject': 'Follow Up',
             'notes': 'Follow up for her schizophrenia',
             'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
-        response = requests.get(
+        response = requests.post(
             'http://127.0.0.1:8080/appointment/createAppointment',
-            params=payload)
+            data=payload)
         self.assertEqual(200, response.status_code)
 
-    def getCalendar_test(self):
+    def test_getCalendar_test(self):
         payload = {'token': 'value1'}
-        response = requests.get(
+        response = requests.post(
             'http://127.0.0.1:8080/appointment/getCalendar',
-            params=payload)
+            data=payload)
         self.assertEqual(200, response.status_code)
 
-    def getByToken_test(self):
+    def test_getByToken_test(self):
         payload = {'token': 'value1'}
-        response = requests.get(
+        response = requests.post(
             'http://127.0.0.1:8080/appointment/getByToken',
-            params=payload)
+            data=payload)
         self.assertEqual(200, response.status_code)
 
-    def delete_appointment_test(self):
+    def test_delete_appointment_test(self):
         payload = {'token': 'value1'}
-        response = requests.get(
+        response = requests.post(
             'http://127.0.0.1:8080/appointment/delete_appointment',
-            params=payload)
+            data=payload)
         self.assertEqual(200, response.status_code)
 
 
 if __name__ == '__main__':
     unittest.main()
+
+# suite = unittest.TestLoader().loadTestsFromTestCase(AppointmentApiTestCase)
+# unittest.TextTestRunner(verbosity=2).run(suite)
