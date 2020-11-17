@@ -66,20 +66,20 @@ def create_dummy_data():
         id="hw2735",
         firstName="Kevin",
         lastName="Wong",
-        phone="+19175587800",
+        phone="610-844-1360",
         email="hw2735@columbia.edu",
         specialty="Accident and Emergency",
         profilePicture='',
         calendar=[],
         title='Resident',
-        patients=[],
+        patients=['aoc1989'],
         hours=schedule)
 
     dummy_patient = Patient(
         id="aoc1989",
         firstName="Alexandria",
         lastName="Ocasio-Cortez",
-        phone="0000000000",
+        phone="6108441360",
         email="aoc@democrat.com",
         dateOfBirth="1989-10-13",
         sex='F',
@@ -238,9 +238,9 @@ class HCPTestCase(unittest.TestCase):
 
         response = requests.post('http://127.0.0.1:8080/hcp/signUp',
                                  json=payload)
-        hcp_id_r = response.json
-        print(hcp_id_r)
-        print(type(hcp_id_r))
+        hcp_id_r = response.json()
+        # print(hcp_id_r)
+        # print(type(hcp_id_r))
         hcp_id = hcp_id_r['id']
         self.assertEqual(201, response.status_code)
         self.assertEqual('ap0000', hcp_id)
@@ -251,17 +251,22 @@ class HCPTestCase(unittest.TestCase):
         response = requests.post(
             'http://127.0.0.1:8080/hcp/logIn',
             json=payload)
-        hcp_token = response.json
+        hcp = response.json()
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'googleId': 'hw2735'}, response.googleId)
+        self.assertEqual('hw2735', hcp['id'])
 
     def test_set_health_event_test(self):
         payload = {'token': HCPTestCase.hcp_token,
                    'id': 'aoc1989',
-                   'date': time.time(),
-                   'event': 'schizophrenia',
-                   'remarks': 'Strong violent tendency',
-                   'status': 0}
+                   'health': [
+                       {
+                           'date': time.time(),
+                           'event': 'schizophrenia',
+                           'remarks': 'Strong violent tendency',
+                           'status': 0
+                       }
+                   ]
+                   }
         response = requests.post(
             'http://127.0.0.1:8080/hcp/setRecords',
             json=payload)
@@ -276,7 +281,10 @@ class HCPTestCase(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_remove_test(self):
-        payload = {'id': 'ap0000'}
+        payload = {
+            'id': 'ap0000',
+            'token': HCPTestCase.hcp_token
+        }
         response = requests.post(
             'http://127.0.0.1:8080/hcp/delete',
             json=payload)

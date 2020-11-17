@@ -69,6 +69,7 @@ def login():
     try:
         pid = request.json['id']
         email = request.json['email']
+        print(email)
         res = hcpdb.document(str(pid)).get()
         res = res.to_dict()
         if res['email'] == email:
@@ -821,7 +822,7 @@ def set_health_events():
             except Exception as e:
                 return f"Unable to find {post_data.get('id')} because {e}", 404
 
-            return make_response(jsonify(resp.health)), 200
+            return make_response(jsonify(resp.health)), 201
         else:
             response_object = {
                 'Success': False,
