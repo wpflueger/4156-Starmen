@@ -8,6 +8,7 @@ from ....src.models.health_event import HealthEvent
 from ....src.models.patient import Patient
 from ....src.models.enums import Status
 from ....src.models.appointment import Appointment
+import datetime
 
 """HCP API Endpoints
 
@@ -74,7 +75,7 @@ def login():
             utype = "HCP"
             auth_token = auth.encode_auth_token(pid, utype)
             resp = {
-                "googleId": pid,
+                "id": pid,
                 "token": auth_token.decode()
             }
             return jsonify(resp), 200
@@ -466,6 +467,7 @@ def notify():
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
         post_data = request.get_json()
+        # print(f'{hid} and {utype}')
         if utype == "HCP":
             try:
                 appointment_id = post_data.get('id')
@@ -502,19 +504,20 @@ def notify():
                 )
 
                 client = twilio.connect()
-                message = client.messages .create(
+                message = client.messages.create(
                     body=f"Hi {resp.firstName} you have an appointment at "
-                         f"{appointment.date} join at "
+                         f"{datetime.datetime.fromtimestamp(appointment.date / 1e3)} join at "
                     f"{appointment.videoUrl}",
                     from_='+19036182297',
                     to=f'+1{str(resp.phone).replace("", "")}')
                 print(message)
+                print(datetime.datetime.fromtimestamp(appointment.date / 1e3))
                 res = {
                     "Success": True
                 }
 
             except Exception as e:
-                return f"Unable to find {post_data.get('id')} because {e}", 404
+                return f"Unable to find {post_data.get('id')} because {e}", 400
 
             return make_response(jsonify(res)), 200
         else:
