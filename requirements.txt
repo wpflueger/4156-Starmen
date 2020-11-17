@@ -1,3 +1,4 @@
+PyJWT
 dotenv
 flask
 twilio

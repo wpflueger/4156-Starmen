@@ -58,9 +58,11 @@ def login():
         Response: JSON
     """
     try:
+
         pid = request.json['id']
         email = request.json['email']
         res = pat.document(str(pid)).get()
+
         res = res.to_dict()
 
         if res['email'] == email:
@@ -74,7 +76,7 @@ def login():
         else:
             return "False", 404
     except Exception as e:
-        return f"An Error Occured: {e}"
+        return f"An Error Occured: {e}", 500
 
 
 @patient_endpoints.route('/signUp', methods=['POST'])

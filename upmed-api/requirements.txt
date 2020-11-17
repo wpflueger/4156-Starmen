@@ -23,7 +23,7 @@ simple-crypt
 
 # JWT
 PyJWT
-jwt
+
 
 # Twilio API
 twilio

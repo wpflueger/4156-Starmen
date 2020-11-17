@@ -1,6 +1,7 @@
+import os
 from .util.env import Env
 from flask import Flask
-import os
+
 from .api import api_endpoints
 from flask_cors import CORS
 
@@ -16,7 +17,7 @@ from flask_cors import CORS
 
 from api import api_endpoints
 
-
+CORS(app)
 ----Relative Imports----
 import os
 from .util.env import Env

@@ -4,7 +4,6 @@ from .hcp import hcp_endpoints
 from .patient import patient_endpoints
 from .appointment import appointment_endpoints
 
-
 """
 Register appointment blueprints
 ---Heroku Imports----
