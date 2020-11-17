@@ -11,8 +11,8 @@ from ....src.models.appointment import Appointment
 
 """HCP API Endpoints
 
-	----Heroku Imports----
-	from models import HCP, Hours, Day, HealthEvent, Patient, Status, Appointment
+----Heroku Imports----
+from models import HCP, Hours, Day, HealthEvent, Patient, Status, Appointment
 from util import Database, Auth, Twilio
 from flask import Blueprint, request, jsonify, make_response
 import sys
@@ -34,8 +34,8 @@ from ....src.models.patient import Patient
 from ....src.models.enums import Status
 from ....src.models.appointment import Appointment
 
-	Returns:
-		HTTP Response: JSON
+Returns:
+HTTP Response: JSON
 """
 
 # Setup HCP and Patient Document Collections
@@ -127,52 +127,66 @@ def signup():
 
         newsched = post_data.get('hours')
 
-        if newsched['sunday']['startTime'] == -1 and newsched['sunday']['endTime'] == -1:
+        if newsched['sunday']['startTime'] == \
+                -1 and newsched['sunday']['endTime'] == -1:
             hcp.hours.sunday.startTime = -1
             hcp.hours.sunday.endTime = -1
-        elif 0 <= newsched['sunday']['startTime'] <= newsched['sunday']['endTime']:
+        elif 0 <= newsched['sunday']['startTime'] \
+                <= newsched['sunday']['endTime']:
             hcp.hours.sunday.startTime = newsched['sunday']['startTime']
             hcp.hours.sunday.endTime = newsched['sunday']['endTime']
 
-        if newsched['monday']['startTime'] == -1 and newsched['monday']['endTime'] == -1:
+        if newsched['monday']['startTime'] == \
+                -1 and newsched['monday']['endTime'] == -1:
             hcp.hours.monday.startTime = -1
             hcp.hours.monday.endTime = -1
-        elif 0 <= newsched['monday']['startTime'] <= newsched['monday']['endTime']:
+        elif 0 <= newsched['monday']['startTime'] \
+                <= newsched['monday']['endTime']:
             hcp.hours.monday.startTime = newsched['monday']['startTime']
             hcp.hours.monday.endTime = newsched['monday']['endTime']
 
-        if newsched['tuesday']['startTime'] == -1 and newsched['tuesday']['endTime'] == -1:
+        if newsched['tuesday']['startTime'] == \
+                -1 and newsched['tuesday']['endTime'] == -1:
             hcp.hours.tuesday.startTime = -1
             hcp.hours.tuesday.endTime = -1
-        elif 0 <= newsched['tuesday']['startTime'] <= newsched['tuesday']['endTime']:
+        elif 0 <= newsched['tuesday']['startTime'] \
+                <= newsched['tuesday']['endTime']:
             hcp.hours.tuesday.startTime = newsched['tuesday']['startTime']
             hcp.hours.tuesday.endTime = newsched['tuesday']['endTime']
 
-        if newsched['wednesday']['startTime'] == -1 and newsched['wednesday']['endTime'] == -1:
+        if newsched['wednesday']['startTime'] == \
+                -1 and newsched['wednesday']['endTime'] == -1:
             hcp.hours.wednesday.startTime = -1
             hcp.hours.wednesday.endTime = -1
-        elif 0 <= newsched['wednesday']['startTime'] <= newsched['wednesday']['endTime']:
+        elif 0 <= newsched['wednesday']['startTime'] \
+                <= newsched['wednesday']['endTime']:
             hcp.hours.wednesday.startTime = newsched['wednesday']['startTime']
             hcp.hours.wednesday.endTime = newsched['wednesday']['endTime']
 
-        if newsched['thursday']['startTime'] == -1 and newsched['thursday']['endTime'] == -1:
+        if newsched['thursday']['startTime'] == \
+                -1 and newsched['thursday']['endTime'] == -1:
             hcp.hours.thursday.startTime = -1
             hcp.hours.thursday.endTime = -1
-        elif 0 <= newsched['thursday']['startTime'] <= newsched['thursday']['endTime']:
+        elif 0 <= newsched['thursday']['startTime'] \
+                <= newsched['thursday']['endTime']:
             hcp.hours.thursday.startTime = newsched['thursday']['startTime']
             hcp.hours.thursday.endTime = newsched['thursday']['endTime']
 
-        if newsched['friday']['startTime'] == -1 and newsched['friday']['endTime'] == -1:
+        if newsched['friday']['startTime'] == \
+                -1 and newsched['friday']['endTime'] == -1:
             hcp.hours.friday.startTime = -1
             hcp.hours.friday.endTime = -1
-        elif 0 <= newsched['friday']['startTime'] <= newsched['friday']['endTime']:
+        elif 0 <= newsched['friday']['startTime'] \
+                <= newsched['friday']['endTime']:
             hcp.hours.friday.startTime = newsched['friday']['startTime']
             hcp.hours.friday.endTime = newsched['friday']['endTime']
 
-        if newsched['saturday']['startTime'] == -1 and newsched['saturday']['endTime'] == -1:
+        if newsched['saturday']['startTime'] == \
+                -1 and newsched['saturday']['endTime'] == -1:
             hcp.hours.sunday.saturday = -1
             hcp.hours.sunday.saturday = -1
-        elif 0 <= newsched['saturday']['startTime'] <= newsched['saturday']['endTime']:
+        elif 0 <= newsched['saturday']['startTime'] \
+                <= newsched['saturday']['endTime']:
             hcp.hours.saturday.startTime = newsched['saturday']['startTime']
             hcp.hours.saturday.endTime = newsched['saturday']['endTime']
 
@@ -441,10 +455,10 @@ def set_health_event():
 def notify():
     """
     Notify patient of appoint
-    	Request{
-		token: string
-		appointment_d: string
-	}
+        Request{
+                token: string
+                appointment_d: string
+        }
     :return: Response
     """
 
@@ -487,13 +501,12 @@ def notify():
                 )
 
                 client = twilio.connect()
-                message = client.messages \
-                    .create(
-                        body=f"Hi {resp.firstName} you have an appointment at {appointment.startDate} join at "
-                        f"{appointment.videoUrl}",
-                        from_='+19036182297',
-                        to=f'+1{str(resp.phone).replace("", "")}'
-                    )
+                message = client.messages .create(
+                    body=f"Hi {resp.firstName} you have an appointment at "
+                         f"{appointment.startDate} join at "
+                    f"{appointment.videoUrl}",
+                    from_='+19036182297',
+                    to=f'+1{str(resp.phone).replace("", "")}')
                 print(message)
                 res = {
                     "Success": True
@@ -522,9 +535,9 @@ def edit_hcp_profile():
     """
     Edit existing HCP profile
 
-	Returns:
-		Response: JSON
-	"""
+        Returns:
+                Response: JSON
+        """
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
@@ -566,64 +579,78 @@ def edit_hcp_profile():
 
                 newsched = post_data.get('hours')
 
-                if int(newsched['sunday']['startTime']) == -1 and int(newsched['sunday']['endTime']) == -1:
+                if int(newsched['sunday']['startTime']) == \
+                        -1 and int(newsched['sunday']['endTime']) == -1:
                     hcp.hours.sunday.startTime = -1
                     hcp.hours.sunday.endTime = -1
-                elif 0 <= int(newsched['sunday']['startTime']) <= int(newsched['sunday']['endTime']):
+                elif 0 <= int(newsched['sunday']['startTime']) \
+                        <= int(newsched['sunday']['endTime']):
                     hcp.hours.sunday.startTime = int(
                         newsched['sunday']['startTime'])
                     hcp.hours.sunday.endTime = int(
                         newsched['sunday']['endTime'])
 
-                if int(newsched['monday']['startTime']) == -1 and int(newsched['monday']['endTime']) == -1:
+                if int(newsched['monday']['startTime']) == \
+                        -1 and int(newsched['monday']['endTime']) == -1:
                     hcp.hours.monday.startTime = -1
                     hcp.hours.monday.endTime = -1
-                elif 0 <= int(newsched['monday']['startTime']) <= int(newsched['monday']['endTime']):
+                elif 0 <= int(newsched['monday']['startTime']) \
+                        <= int(newsched['monday']['endTime']):
                     hcp.hours.monday.startTime = int(
                         newsched['monday']['startTime'])
                     hcp.hours.monday.endTime = int(
                         newsched['monday']['endTime'])
 
-                if int(newsched['tuesday']['startTime']) == -1 and int(newsched['tuesday']['endTime']) == -1:
+                if int(newsched['tuesday']['startTime']) == \
+                        -1 and int(newsched['tuesday']['endTime']) == -1:
                     hcp.hours.tuesday.startTime = -1
                     hcp.hours.tuesday.endTime = -1
-                elif 0 <= int(newsched['tuesday']['startTime']) <= int(newsched['tuesday']['endTime']):
+                elif 0 <= int(newsched['tuesday']['startTime']) \
+                        <= int(newsched['tuesday']['endTime']):
                     hcp.hours.tuesday.startTime = int(
                         newsched['tuesday']['startTime'])
                     hcp.hours.tuesday.endTime = int(
                         newsched['tuesday']['endTime'])
 
-                if int(newsched['wednesday']['startTime']) == -1 and int(newsched['wednesday']['endTime']) == -1:
+                if int(newsched['wednesday']['startTime']) == \
+                        -1 and int(newsched['wednesday']['endTime']) == -1:
                     hcp.hours.wednesday.startTime = -1
                     hcp.hours.wednesday.endTime = -1
-                elif 0 <= int(newsched['wednesday']['startTime']) <= int(newsched['wednesday']['endTime']):
+                elif 0 <= int(newsched['wednesday']['startTime']) \
+                        <= int(newsched['wednesday']['endTime']):
                     hcp.hours.wednesday.startTime = int(
                         newsched['wednesday']['startTime'])
                     hcp.hours.wednesday.endTime = int(
                         newsched['wednesday']['endTime'])
 
-                if int(newsched['thursday']['startTime']) == -1 and int(newsched['thursday']['endTime']) == -1:
+                if int(newsched['thursday']['startTime']) == \
+                        -1 and int(newsched['thursday']['endTime']) == -1:
                     hcp.hours.thursday.startTime = -1
                     hcp.hours.thursday.endTime = -1
-                elif 0 <= int(newsched['thursday']['startTime']) <= int(newsched['thursday']['endTime']):
+                elif 0 <= int(newsched['thursday']['startTime']) \
+                        <= int(newsched['thursday']['endTime']):
                     hcp.hours.thursday.startTime = int(
                         newsched['thursday']['startTime'])
                     hcp.hours.thursday.endTime = int(
                         newsched['thursday']['endTime'])
 
-                if int(newsched['friday']['startTime']) == -1 and int(newsched['friday']['endTime']) == -1:
+                if int(newsched['friday']['startTime']) == \
+                        -1 and int(newsched['friday']['endTime']) == -1:
                     hcp.hours.friday.startTime = -1
                     hcp.hours.friday.endTime = -1
-                elif 0 <= int(newsched['friday']['startTime']) <= int(newsched['friday']['endTime']):
+                elif 0 <= int(newsched['friday']['startTime']) \
+                        <= int(newsched['friday']['endTime']):
                     hcp.hours.friday.startTime = int(
                         newsched['friday']['startTime'])
                     hcp.hours.friday.endTime = int(
                         newsched['friday']['endTime'])
 
-                if int(newsched['saturday']['startTime']) == -1 and int(newsched['saturday']['endTime']) == -1:
+                if int(newsched['saturday']['startTime']) == \
+                        -1 and int(newsched['saturday']['endTime']) == -1:
                     hcp.hours.sunday.saturday = -1
                     hcp.hours.sunday.saturday = -1
-                elif 0 <= int(newsched['saturday']['startTime']) <= int(newsched['saturday']['endTime']):
+                elif 0 <= int(newsched['saturday']['startTime']) \
+                        <= int(newsched['saturday']['endTime']):
                     hcp.hours.saturday.startTime = int(
                         newsched['saturday']['startTime'])
                     hcp.hours.saturday.endTime = int(
@@ -808,12 +835,12 @@ def set_health_events():
 @hcp_endpoints.route('/getAll', methods=['POST'])
 def get_all():
     """
-	Get all HCPs
+        Get all HCPs
 
-	Returns:
-		List[HCP]
-	:return:
-	"""
+        Returns:
+                List[HCP]
+        :return:
+        """
 
     auth_token = request.get_json().get('token')
     if auth_token:

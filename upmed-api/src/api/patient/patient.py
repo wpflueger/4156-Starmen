@@ -106,7 +106,8 @@ def signup():
         try:
             patient.profilePicture = post_data.get('profilePicture')
         except KeyError:
-            patient.profilePicture = 'https://www.flaticon.com/svg/static/icons/svg/147/147144.svg'
+            patient.profilePicture = 'https://www.flaticon.com/svg/static/' \
+                                     'icons/svg/147/147144.svg'
 
         # Parse phone number
         # phone = str(post_data.get('phone')).replace('-', '')

@@ -55,7 +55,8 @@ def root():
 @appointment_endpoints.route('/getByToken', methods=['POST'])
 def get_by_token():
     """
-        Get the appointment details given appointment ID, request must be from concerned patient or healthcare professional.
+        Get the appointment details given appointment ID, request
+        must be from concerned patient or healthcare professional.
         Request:
         {
             token: string
@@ -73,8 +74,8 @@ def get_by_token():
             appointmentId = post_data.get('appointmentId')
             elements = appointmentId.split(',')
 
-            user_id_verified = False
-            if (utype == "HCP") and (str(pid) == str(elements[1])) or (utype == "PATIENT") and (str(pid) == str(elements[0])):
+            if (utype == "HCP") and (str(pid) == str(elements[1])) or (
+                    utype == "PATIENT") and (str(pid) == str(elements[0])):
                 appointmentId = post_data.get('appointmentId')
                 appointments_output = appointmentsdb.document(
                     str(appointmentId)).get().to_dict()
@@ -95,7 +96,9 @@ def get_by_token():
             else:
                 response_object = {
                     'status': 'fail',
-                    'message': 'Delete request not originated from concerned patient or healthcare professional.'
+                    'message': 'Delete request not '
+                               'originated from concerned patient or '
+                               'healthcare professional.'
                 }
                 return make_response(jsonify(response_object)), 401
         except Exception as e:
@@ -111,7 +114,8 @@ def get_by_token():
 @appointment_endpoints.route('/getCalendar', methods=['POST'])
 def get_calendar():
     """
-        Get a list of Appointment IDs specific to the user from within the token.
+        Get a list of Appointment IDs specific to the
+        user from within the token.
         Request:
         {
             token: string
@@ -155,13 +159,16 @@ def get_calendar():
 @appointment_endpoints.route('/createAppointment', methods=['POST'])
 def create_appointment():
     """
-    Create a new appointment given the appointment details, returns an unique appointment id
+    Create a new appointment given the appointment details,
+    returns an unique appointment id
     Request:
             token: string
             date: int (UNIX Time)
             duration: int (0-1440 minutes)
-            hcpid: str    (if patient initiate an appointment need to specify which hcp)
-            patient: str  (if HCP initiate an appointment need to specify which patient)
+            hcpid: str    (if patient initiate an appointment need
+                to specify which hcp)
+            patient: str  (if HCP initiate an appointment
+                need to specify which patient)
             subject: str
             notes: Optional[str]
             videoUrl: Optional[str]
@@ -215,7 +222,8 @@ def create_appointment():
                 "videoUrl": new_appointment.videoUrl
             })
 
-            # Add the appointment id to both respective patient and HCP database
+            # Add the appointment id to both respective patient and HCP
+            # database
             patient_ref = patient_db.document(str(patient_id))
             hcp_ref = hcp_db.document(str(doctor_id))
 
@@ -257,7 +265,9 @@ def create_appointment():
 @appointment_endpoints.route('/delete_appointment', methods=['POST'])
 def delete_appointment():
     """
-        Remove appointment with the given appointment id, the request must originate from either the concerned patient or healthcare professional
+        Remove appointment with the given appointment id,
+        the request must originate from either the concerned patient
+        or healthcare professional
         Request:
         {
             id: string
@@ -279,7 +289,8 @@ def delete_appointment():
             patient_id = str(elements[0])
 
             user_id_verified = False
-            if (utype == "HCP") and (str(pid) == doctor_id) or (utype == "PATIENT") and (str(pid) == patient_id):
+            if (utype == "HCP") and (str(pid) == doctor_id) or (
+                    utype == "PATIENT") and (str(pid) == patient_id):
                 user_id_verified = True
 
             if user_id_verified:
@@ -302,7 +313,8 @@ def delete_appointment():
             else:
                 response_object = {
                     'status': 'fail',
-                    'message': 'Delete request not originated from concerned patient or healthcare professional.'
+                    'message': 'Delete request not originated from '
+                               'concerned patient or healthcare professional.'
                 }
                 return make_response(jsonify(response_object)), 401
         except Exception as e:
