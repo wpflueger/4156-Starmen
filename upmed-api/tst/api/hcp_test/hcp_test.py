@@ -239,8 +239,6 @@ class HCPTestCase(unittest.TestCase):
         response = requests.post('http://127.0.0.1:8080/hcp/signUp',
                                  json=payload)
         hcp_id_r = response.json()
-        # print(hcp_id_r)
-        # print(type(hcp_id_r))
         hcp_id = hcp_id_r['id']
         self.assertEqual(201, response.status_code)
         self.assertEqual('ap0000', hcp_id)
