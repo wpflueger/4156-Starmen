@@ -53,5 +53,5 @@ class Twilio():
 
     def connect(self):
         account_sid = Env.TWILIO_ACCOUNT_SID()
-        auth_token = Env.TWILIO_AUTH_TOKEN_SECRET()
+        auth_token = Env.TWILIO_AUTH_TOKEN()
         return Client(account_sid, auth_token)
