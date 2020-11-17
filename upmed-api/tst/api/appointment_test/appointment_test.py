@@ -1,6 +1,8 @@
 import unittest
-
+import json
 import requests
+from flask import jsonify
+
 from ....src.util.firebase.db import Database
 from ....src.models.patient import Patient
 from ....src.models.hcp import HCP
@@ -9,6 +11,11 @@ from ....src.models.hours import Hours
 from ....src.models.enums import Status
 from ....src.util.util import Auth
 import time
+"""
+Appoinyment endpoint
+Note: run as python3 -m upmed-api.tst.api.appointment_test.appointment_test
+"""
+appointment_token = ''
 
 
 def create_dummy_data():
@@ -124,6 +131,11 @@ class AppointmentApiTestCase(unittest.TestCase):
 
     auth_token = auth.encode_auth_token(dummy_patient.id, "PATIENT")
     patient_token = auth_token.decode()
+    appointment_token = ''
+
+    def test_root(self):
+        response = requests.post('http://127.0.0.1:8080/appointment/')
+        self.assertEqual(200, response.status_code)
 
     def test_createAppointment_test(self, hcp_token=hcp_token):
         timpstamp = time.time()
@@ -136,35 +148,43 @@ class AppointmentApiTestCase(unittest.TestCase):
             'subject': 'Follow Up',
             'notes': 'Follow up for her schizophrenia',
             'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
+
+        data = payload
+        # print(data)
+
         response = requests.post(
             'http://127.0.0.1:8080/appointment/createAppointment',
-            data=payload)
+            json=data)
+        appointment_token = response.json
+        # print(appointment_token)
         self.assertEqual(200, response.status_code)
 
-    def test_getCalendar_test(self):
-        payload = {'token': 'value1'}
+    def test_getCalendar_test(self, hcp_token=hcp_token):
+        payload = {'token': hcp_token
+                   }
         response = requests.post(
             'http://127.0.0.1:8080/appointment/getCalendar',
-            data=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
-    def test_getByToken_test(self):
-        payload = {'token': 'value1'}
+    def test_getByToken_test(self, hcp_token=hcp_token, id=appointment_token):
+        payload = {'token': hcp_token,
+                   'id': appointment_token}
         response = requests.post(
             'http://127.0.0.1:8080/appointment/getByToken',
-            data=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
-    def test_delete_appointment_test(self):
-        payload = {'token': 'value1'}
+    def test_delete_appointment_test(self, hcp_token=hcp_token, id=appointment_token):
+        payload = {
+            'token': hcp_token,
+            'id': appointment_token
+        }
         response = requests.post(
             'http://127.0.0.1:8080/appointment/delete_appointment',
-            data=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
 
 if __name__ == '__main__':
     unittest.main()
-
-# suite = unittest.TestLoader().loadTestsFromTestCase(AppointmentApiTestCase)
-# unittest.TextTestRunner(verbosity=2).run(suite)

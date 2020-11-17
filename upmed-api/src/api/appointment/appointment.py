@@ -41,7 +41,7 @@ auth = Auth()
 appointment_endpoints = Blueprint('appointment', __name__)
 
 
-@appointment_endpoints.route('/')
+@appointment_endpoints.route('/', methods=['POST'])
 def root():
     """
     Deafault Route
@@ -49,7 +49,7 @@ def root():
     Returns:
         reponse: string
     """
-    return "appointment root"
+    return make_response(jsonify("Hello World")), 200
 
 
 @appointment_endpoints.route('/getByToken', methods=['POST'])
@@ -66,6 +66,7 @@ def get_by_token():
         200 OK
         (Appointment object in JSON format)
     """
+    print(request.get_json())
     auth_token = request.get_json().get('token')
     if auth_token:
         try:
@@ -124,6 +125,7 @@ def get_calendar():
         200 OK
         ( List[AppointmentId] )
     """
+    print(request.get_json())
     auth_token = request.get_json().get('token')
 
     if auth_token:
@@ -178,6 +180,7 @@ def create_appointment():
         appointmentId: string
     }
     """
+    print(request.get_json())
     auth_token = request.get_json().get('token')
     if auth_token:
         pid, utype = Auth.decode_auth_token(auth_token)
