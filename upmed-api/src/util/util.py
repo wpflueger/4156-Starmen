@@ -1,11 +1,12 @@
-import sys, os
+from twilio.rest import Client
+from .env import Env
+import datetime
+import jwt
+import sys
+import os
 from os.path import join
 sys.path.append(join(os.getcwd(), '..'))
 
-import jwt
-import datetime
-from .env import Env
-from twilio.rest import Client
 
 class Auth():
     """ TOKEN FUCNTIONS"""
@@ -17,7 +18,8 @@ class Auth():
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7, seconds=0),
+                'exp': datetime.datetime.utcnow() +
+                datetime.timedelta(days=7, seconds=0),
                 'iat': datetime.datetime.utcnow(),
                 'googleId': user_id,
                 'userType': type

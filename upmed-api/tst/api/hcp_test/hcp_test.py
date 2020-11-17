@@ -1,4 +1,20 @@
 import unittest
+import requests
+from ....src.util.firebase.db import Database
+from ....src.models.patient import Patient
+from ....src.models.hcp import HCP
+from ....src.models.appointment import Appointment
+from ....src.models.day import Day
+from ....src.models.hours import Hours
+from ....src.models.enums import Status
+from ....src.util.util import Auth
+import time
+
+
+"""
+Unittest
+
+--- Absolute Imports ---
 import os, sys
 sys.path.append('../../src/')
 import requests
@@ -12,24 +28,18 @@ from models.enums import Status
 from util.util import Auth
 import time
 
-
-"""
-Unittest
-
---- Absolute Imports ---
-import requests
-from util.firebase.db import Database
-from models.patient import Patient
-from models.hcp import HCP
-from models.appointment import Appointment
-from models.day import Day
-from models.hours import Hours
-from models.enums import Status
-from util.util import Auth
-import time
-
 ---Relative Imports ----
-
+import unittest
+import requests
+from ....src.util.firebase.db import Database
+from ....src.models.patient import Patient
+from ....src.models.hcp import HCP
+from ....src.models.appointment import Appointment
+from ....src.models.day import Day
+from ....src.models.hours import Hours
+from ....src.models.enums import Status
+from ....src.util.util import Auth
+import time
 
 
 """
@@ -40,8 +50,14 @@ def create_dummy_data():
     week = []
     for i in range(0, 7):
         week.append(Day(startTime=540, endTime=1020, ))
-    schedule = Hours(sunday=week[0], monday=week[1], tuesday=week[2], wednesday=week[3],
-                     thursday=week[4], friday=week[5], saturday=week[6])
+    schedule = Hours(
+        sunday=week[0],
+        monday=week[1],
+        tuesday=week[2],
+        wednesday=week[3],
+        thursday=week[4],
+        friday=week[5],
+        saturday=week[6])
     dummy_hcp = HCP(
         id="hw2735",
         firstName="Kevin",
@@ -144,8 +160,14 @@ class HCPTestCase(unittest.TestCase):
         week = []
         for i in range(0, 7):
             week.append(Day(startTime=540, endTime=1020))
-        schedule = Hours(sunday=week[0], monday=week[1], tuesday=week[2], wednesday=week[3],
-                         thursday=week[4], friday=week[5], saturday=week[6])
+        schedule = Hours(
+            sunday=week[0],
+            monday=week[1],
+            tuesday=week[2],
+            wednesday=week[3],
+            thursday=week[4],
+            friday=week[5],
+            saturday=week[6])
         payload = {'id': "ap0000",
                    'firstName': "Athena",
                    'lastName': "Pang",
@@ -155,14 +177,18 @@ class HCPTestCase(unittest.TestCase):
                    'hours': schedule,
                    'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
 
-        response = requests.get('http://127.0.0.1:8080/hcp/signUp', params=payload)
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/signUp',
+            params=payload)
         self.assertEqual(201, response.status_code)
         self.assertEqual({'id': 'ap0000'}, response.id)
 
     def login_test(self):
         payload = {'id': "hw2735",
                    'email': "hw2735@columbia.edu"}
-        response = requests.get('http://127.0.0.1:8080/hcp/logIn', params=payload)
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/logIn',
+            params=payload)
         self.assertEqual(200, response.status_code)
         self.assertEqual({'googleId': 'hw2735'}, response.googleId)
 
@@ -173,18 +199,24 @@ class HCPTestCase(unittest.TestCase):
                    'event': 'schizophrenia',
                    'remarks': 'Strong violent tendency',
                    'status': 0}
-        response = requests.get('http://127.0.0.1:8080/hcp/setRecords', params=payload)
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/setRecords',
+            params=payload)
         self.assertEqual(201, response.status_code)
 
     def notify_test(self):
         payload = {'token': HCPTestCase.hcp_token,
                    'id': 'aoc1989,hw2735,1605505365'}
-        response = requests.get('http://127.0.0.1:8080/hcp/notify', params=payload)
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/notify',
+            params=payload)
         self.assertEqual(200, response.status_code)
 
     def remove_test(self):
         payload = {'id': 'ap0000'}
-        response = requests.get('http://127.0.0.1:8080/hcp/delete', params=payload)
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/delete',
+            params=payload)
         self.assertEqual(200, response.status_code)
 
 

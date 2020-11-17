@@ -474,6 +474,7 @@ def notify():
                 appointment = Appointment(
                     id=appointment_resp['id'],
                     date=appointment_resp['date'],
+                    duration=appointment_resp['duration'],
                     doctor=appointment_resp['doctor'],
                     patient=appointment_resp['patient'],
                     subject=appointment_resp['subject'],
@@ -503,7 +504,7 @@ def notify():
                 client = twilio.connect()
                 message = client.messages .create(
                     body=f"Hi {resp.firstName} you have an appointment at "
-                         f"{appointment.startDate} join at "
+                         f"{appointment.date} join at "
                     f"{appointment.videoUrl}",
                     from_='+19036182297',
                     to=f'+1{str(resp.phone).replace("", "")}')

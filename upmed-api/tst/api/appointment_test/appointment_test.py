@@ -16,8 +16,14 @@ def create_dummy_data():
     week = []
     for i in range(0, 7):
         week.append(Day(startTime=540, endTime=1020, ))
-    schedule = Hours(sunday=week[0], monday=week[1], tuesday=week[2], wednesday=week[3],
-                     thursday=week[4], friday=week[5], saturday=week[6])
+    schedule = Hours(
+        sunday=week[0],
+        monday=week[1],
+        tuesday=week[2],
+        wednesday=week[3],
+        thursday=week[4],
+        friday=week[5],
+        saturday=week[6])
     dummy_hcp = HCP(
         id="hw2735",
         firstName="Kevin",
@@ -97,31 +103,41 @@ class AppointmentApiTestCase(unittest.TestCase):
 
     def createAppointment_test(self, hcp_token=hcp_token):
         timpstamp = time.time()
-        payload = {'token': hcp_token, 'date': timpstamp, 'duration': 45, 'hcpid': 'hw2735',
-                   'patient': 'aoc1989', 'subject': 'Follow Up', 'notes': 'Follow up for her schizophrenia',
-                   'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
-        response = requests.get('http://127.0.0.1:8080/appointment/createAppointment', params=payload)
+        payload = {
+            'token': hcp_token,
+            'date': timpstamp,
+            'duration': 45,
+            'hcpid': 'hw2735',
+            'patient': 'aoc1989',
+            'subject': 'Follow Up',
+            'notes': 'Follow up for her schizophrenia',
+            'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
+        response = requests.get(
+            'http://127.0.0.1:8080/appointment/createAppointment',
+            params=payload)
         self.assertEqual(200, response.status_code)
 
     def getCalendar_test(self):
         payload = {'token': 'value1'}
-        response = requests.get('http://127.0.0.1:8080/appointment/getCalendar', params=payload)
+        response = requests.get(
+            'http://127.0.0.1:8080/appointment/getCalendar',
+            params=payload)
         self.assertEqual(200, response.status_code)
 
     def getByToken_test(self):
         payload = {'token': 'value1'}
-        response = requests.get('http://127.0.0.1:8080/appointment/getByToken', params=payload)
+        response = requests.get(
+            'http://127.0.0.1:8080/appointment/getByToken',
+            params=payload)
         self.assertEqual(200, response.status_code)
 
     def delete_appointment_test(self):
         payload = {'token': 'value1'}
-        response = requests.get('http://127.0.0.1:8080/appointment/delete_appointment', params=payload)
+        response = requests.get(
+            'http://127.0.0.1:8080/appointment/delete_appointment',
+            params=payload)
         self.assertEqual(200, response.status_code)
 
-    def delete_appointment_test(self):
-        payload = {'token': 'value1'}
-        response = requests.get('http://127.0.0.1:8080/appointment/delete_appointment', params=payload)
-        self.assertEqual(200, response.status_code)
 
 if __name__ == '__main__':
     unittest.main()
