@@ -1,8 +1,6 @@
 import unittest
-import json
-import requests
-from flask import jsonify
 
+import requests
 from ....src.util.firebase.db import Database
 from ....src.models.patient import Patient
 from ....src.models.hcp import HCP
@@ -11,11 +9,6 @@ from ....src.models.hours import Hours
 from ....src.models.enums import Status
 from ....src.util.util import Auth
 import time
-"""
-Appoinyment endpoint
-Note: run as python3 -m upmed-api.tst.api.appointment_test.appointment_test
-"""
-appointment_token = ''
 
 
 def create_dummy_data():
@@ -71,30 +64,6 @@ class AppointmentApiTestCase(unittest.TestCase):
     patient_db = pdb.getPatients()
     appointmentsdb = pdb.getAppointments()
     dummy_hcp, dummy_patient = create_dummy_data()
-    hours = []
-    time = []
-    time.append(dummy_hcp.hours.sunday.startTime)
-    time.append(dummy_hcp.hours.sunday.endTime)
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.monday.startTime
-    time[1] = dummy_hcp.hours.monday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.tuesday.startTime
-    time[1] = dummy_hcp.hours.tuesday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.wednesday.startTime
-    time[1] = dummy_hcp.hours.wednesday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.thursday.startTime
-    time[1] = dummy_hcp.hours.thursday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.friday.startTime
-    time[1] = dummy_hcp.hours.friday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.saturday.startTime
-    time[1] = dummy_hcp.hours.saturday.endTime
-    hours.append(str(time))
-
     hcp_db.document(dummy_hcp.id).set({
         "id": dummy_hcp.id,
         "firstName": dummy_hcp.firstName,
@@ -105,7 +74,7 @@ class AppointmentApiTestCase(unittest.TestCase):
         "calendar": dummy_hcp.calendar,
         "specialty": dummy_hcp.specialty,
         "title": dummy_hcp.title,
-        "hours": hours,
+        "hours": dummy_hcp,
         "patients": dummy_hcp.patients
     })
     patient_db.document(dummy_patient.id).set({
@@ -119,8 +88,8 @@ class AppointmentApiTestCase(unittest.TestCase):
         "profilePicture": dummy_patient.profilePicture,
         "height": dummy_patient.height,
         "weight": dummy_patient.weight,
-        "drinker": dummy_patient.drinker.value,
-        "smoker": dummy_patient.smoker.value,
+        "drinker": dummy_patient.drinker,
+        "smoker": dummy_patient.smoker,
         "calendar": dummy_patient.calendar,
         "health": dummy_patient.health,
         "doctors": dummy_patient.doctors
@@ -131,13 +100,8 @@ class AppointmentApiTestCase(unittest.TestCase):
 
     auth_token = auth.encode_auth_token(dummy_patient.id, "PATIENT")
     patient_token = auth_token.decode()
-    appointment_token = ''
 
-    def test_root(self):
-        response = requests.post('http://127.0.0.1:8080/appointment/')
-        self.assertEqual(200, response.status_code)
-
-    def test_createAppointment_test(self, hcp_token=hcp_token):
+    def createAppointment_test(self, hcp_token=hcp_token):
         timpstamp = time.time()
         payload = {
             'token': hcp_token,
@@ -148,41 +112,30 @@ class AppointmentApiTestCase(unittest.TestCase):
             'subject': 'Follow Up',
             'notes': 'Follow up for her schizophrenia',
             'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
-
-        data = payload
-        # print(data)
-
-        response = requests.post(
+        response = requests.get(
             'http://127.0.0.1:8080/appointment/createAppointment',
-            json=data)
-        appointment_token = response.json
-        # print(appointment_token)
+            params=payload)
         self.assertEqual(200, response.status_code)
 
-    def test_getCalendar_test(self, hcp_token=hcp_token):
-        payload = {'token': hcp_token
-                   }
-        response = requests.post(
+    def getCalendar_test(self):
+        payload = {'token': 'value1'}
+        response = requests.get(
             'http://127.0.0.1:8080/appointment/getCalendar',
-            json=payload)
+            params=payload)
         self.assertEqual(200, response.status_code)
 
-    def test_getByToken_test(self, hcp_token=hcp_token, id=appointment_token):
-        payload = {'token': hcp_token,
-                   'id': appointment_token}
-        response = requests.post(
+    def getByToken_test(self):
+        payload = {'token': 'value1'}
+        response = requests.get(
             'http://127.0.0.1:8080/appointment/getByToken',
-            json=payload)
+            params=payload)
         self.assertEqual(200, response.status_code)
 
-    def test_delete_appointment_test(self, hcp_token=hcp_token, id=appointment_token):
-        payload = {
-            'token': hcp_token,
-            'id': appointment_token
-        }
-        response = requests.post(
+    def delete_appointment_test(self):
+        payload = {'token': 'value1'}
+        response = requests.get(
             'http://127.0.0.1:8080/appointment/delete_appointment',
-            json=payload)
+            params=payload)
         self.assertEqual(200, response.status_code)
 
 
