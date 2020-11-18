@@ -184,7 +184,10 @@ class HCPTestCase(unittest.TestCase):
                    'email': "ap0000@columbia.edu",
                    'specialty': "Accident and Emergency",
                    'hours': schedule,
-                   'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
+                   'profilePicture': 'https://upload.wikimedia.org/wikipedia/commons/e/ed/Elon_Musk_Royal_Society.jpg',
+                   'calendar': '',
+                   'title': 'Resident',
+                   'patients': []}
 
         response = requests.get(
             'http://127.0.0.1:8080/hcp/signUp',
@@ -199,6 +202,11 @@ class HCPTestCase(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_getByToken(self):
+        payload = {'token': HCPTestCase.hcp_token}
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/getByToken',
+            json=payload)
+        self.assertEqual(200, response.status_code)
 
     def test_set_health_event(self):
         payload = {'token': HCPTestCase.hcp_token,
@@ -221,12 +229,71 @@ class HCPTestCase(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_number(self):
+        payload = {'token': HCPTestCase.hcp_token,
+                   'id': 'aoc1989,hw2735,1605505365'}
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/notify',
+            json=payload)
+        self.assertEqual(200, response.status_code)
 
     def test_edit_hcp_profile(self):
+        week = []
+        for i in range(0, 7):
+            week.append(Day(startTime=600, endTime=1080))
+        schedule = Hours(
+            sunday=week[0],
+            monday=week[1],
+            tuesday=week[2],
+            wednesday=week[3],
+            thursday=week[4],
+            friday=week[5],
+            saturday=week[6])
+        payload = {'id': "ap0000",
+                   'firstName': "Taylor",
+                   'lastName': "Swift",
+                   'phone': '"9175587800"',
+                   'email': "ap0000@columbia.edu",
+                   'specialty': "Oncology",
+                   'hours': schedule,
+                   'profilePicture': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/191125_Taylor_Swift_at_the_2019_American_Music_Awards_%28cropped%29.png',
+                   'calendar': '',
+                   'title': 'Resident',
+                   'patients': []}
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/edit_hcp_profile',
+            json=payload)
+        self.assertEqual(200, response.status_code)
 
     def test_getPatients(self):
+        payload = {'token': HCPTestCase.hcp_token}
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/notify',
+            json=payload)
+        self.assertEqual(200, response.status_code)
 
-    def test_
+    def test_set_health_events(self):
+        payload = {'token': HCPTestCase.hcp_token,
+                   'id': 'aoc1989'}
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/setRecords',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
+    def test_get_all(self):
+        payload = {'token': HCPTestCase.hcp_token}
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/getAll',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
+    def test_set_profile_picture(self):
+        payload = {'token': HCPTestCase.hcp_token,
+                   'profilePicture': 'https://upload.wikimedia.org/wikipedia/en/c/cd/Thanos_Infinity_4.png'}
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/setProfilePicture',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
 
 if __name__ == '__main__':
     unittest.main()
