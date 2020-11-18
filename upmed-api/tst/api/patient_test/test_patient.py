@@ -160,38 +160,36 @@ class PatientTestCase(unittest.TestCase):
 
         response = requests.get(
             'http://127.0.0.1:8080/patient/signUp',
-            params=payload)
+            json=payload)
         self.assertEqual(201, response.status_code)
-        self.assertEqual({'id': 'jb0000'}, response.id)
 
     def test_login(self):
         payload = {'id': "jb0000",
                    'email': "joebiden@democrat.edu"}
         response = requests.get(
             'http://127.0.0.1:8080/patient/logIn',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'id': 'jb0000'}, response.id)
 
     def test_getbytoken(self):
         payload = {'token': PatientTestCase.patient_token}
         response = requests.get(
             'http://127.0.0.1:8080/patient/getbytoken',
-            params=payload)
+            json=payload)
         self.assertEqual(201, response.status_code)
 
     def test_getRecords(self):
         payload = {'token': PatientTestCase.patient_token}
         response = requests.get(
             'http://127.0.0.1:8080/patient/notify',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_remove(self):
         payload = {'id': 'jb0000'}
         response = requests.get(
             'http://127.0.0.1:8080/patient/delete',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_editProfile(self):
@@ -213,21 +211,21 @@ class PatientTestCase(unittest.TestCase):
                    }
         response = requests.get(
             'http://127.0.0.1:8080/patient/editProfile',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_gethcps(self):
         payload = {'token': PatientTestCase.patient_token}
         response = requests.get(
             'http://127.0.0.1:8080/patient/getHCPs',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_get_all(self):
         payload = {'token': PatientTestCase.patient_token}
         response = requests.get(
             'http://127.0.0.1:8080/patient/getAll',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
 

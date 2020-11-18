@@ -1,1 +1,1 @@
-from .appointment_test import *
+from .test_appointment import *

@@ -1,1 +1,1 @@
-from .hcp_test import *
+from .test_hcp import *

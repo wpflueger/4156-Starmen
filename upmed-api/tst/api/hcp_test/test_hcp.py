@@ -180,18 +180,16 @@ class HCPTestCase(unittest.TestCase):
 
         response = requests.get(
             'http://127.0.0.1:8080/hcp/signUp',
-            params=payload)
+            json=payload)
         self.assertEqual(201, response.status_code)
-        self.assertEqual({'id': 'ap0000'}, response.id)
 
     def test_login(self):
         payload = {'id': "hw2735",
                    'email': "hw2735@columbia.edu"}
         response = requests.get(
             'http://127.0.0.1:8080/hcp/logIn',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'googleId': 'hw2735'}, response.googleId)
 
     def test_set_health_event(self):
         payload = {'token': HCPTestCase.hcp_token,
@@ -202,7 +200,7 @@ class HCPTestCase(unittest.TestCase):
                    'status': 0}
         response = requests.get(
             'http://127.0.0.1:8080/hcp/setRecords',
-            params=payload)
+            json=payload)
         self.assertEqual(201, response.status_code)
 
     def test_notify(self):
@@ -210,14 +208,14 @@ class HCPTestCase(unittest.TestCase):
                    'id': 'aoc1989,hw2735,1605505365'}
         response = requests.get(
             'http://127.0.0.1:8080/hcp/notify',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_remove(self):
         payload = {'id': 'ap0000'}
         response = requests.get(
             'http://127.0.0.1:8080/hcp/delete',
-            params=payload)
+            json=payload)
         self.assertEqual(200, response.status_code)
 
 
