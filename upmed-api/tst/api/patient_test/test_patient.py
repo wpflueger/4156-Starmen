@@ -228,6 +228,13 @@ class PatientTestCase(unittest.TestCase):
             json=payload)
         self.assertEqual(200, response.status_code)
 
+    def test_set_profile_picture(self):
+        payload = {'token': PatientTestCase.patient_token,
+                   'profilePicture': 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png'}
+        response = requests.get(
+            'http://127.0.0.1:8080/patient/setProfilePicture',
+            json=payload)
+        self.assertEqual(200, response.status_code)
 
 if __name__ == '__main__':
     unittest.main()

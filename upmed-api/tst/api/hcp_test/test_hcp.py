@@ -157,6 +157,14 @@ class HCPTestCase(unittest.TestCase):
     auth_token = auth.encode_auth_token(dummy_patient.id, "PATIENT")
     patient_token = auth_token.decode()
 
+    def test_login(self):
+        payload = {'id': "hw2735",
+                   'email': "hw2735@columbia.edu"}
+        response = requests.get(
+            'http://127.0.0.1:8080/hcp/logIn',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
     def test_signup(self):
         week = []
         for i in range(0, 7):
@@ -183,13 +191,14 @@ class HCPTestCase(unittest.TestCase):
             json=payload)
         self.assertEqual(201, response.status_code)
 
-    def test_login(self):
-        payload = {'id': "hw2735",
-                   'email': "hw2735@columbia.edu"}
+    def test_remove(self):
+        payload = {'id': 'ap0000'}
         response = requests.get(
-            'http://127.0.0.1:8080/hcp/logIn',
+            'http://127.0.0.1:8080/hcp/delete',
             json=payload)
         self.assertEqual(200, response.status_code)
+
+    def test_getByToken(self):
 
     def test_set_health_event(self):
         payload = {'token': HCPTestCase.hcp_token,
@@ -211,13 +220,13 @@ class HCPTestCase(unittest.TestCase):
             json=payload)
         self.assertEqual(200, response.status_code)
 
-    def test_remove(self):
-        payload = {'id': 'ap0000'}
-        response = requests.get(
-            'http://127.0.0.1:8080/hcp/delete',
-            json=payload)
-        self.assertEqual(200, response.status_code)
+    def test_number(self):
 
+    def test_edit_hcp_profile(self):
+
+    def test_getPatients(self):
+
+    def test_
 
 if __name__ == '__main__':
     unittest.main()
