@@ -131,10 +131,10 @@ class AppointmentApiTestCase(unittest.TestCase):
     patient_token = auth_token.decode()
     appointment_token = ''
 
-    def test_root(self):
-        response = requests.post('http://127.0.0.1:8080/appointment/')
-        #response = requests.post('https://upmed-api.herokuapp.com/appointment/')
-        self.assertEqual(200, response.status_code)
+    # def test_root(self):
+    #     #response = requests.post('http://127.0.0.1:8080/appointment/')
+    #     response = requests.post('https://upmed-api.herokuapp.com/appointment/')
+    #     self.assertEqual(200, response.status_code)
 
     def test_createAppointment_test(self, hcp_token=hcp_token):
         timpstamp = time.time()
@@ -152,7 +152,7 @@ class AppointmentApiTestCase(unittest.TestCase):
         # print(data)
 
         response = requests.post(
-            'http://127.0.0.1:8080/appointment/createAppointment',
+            'https://upmed-api.herokuapp.com/appointment/createAppointment',
             json=data)
         appointment_token = response.json
         # print(appointment_token)
@@ -162,7 +162,7 @@ class AppointmentApiTestCase(unittest.TestCase):
         payload = {'token': hcp_token
                    }
         response = requests.post(
-            'http://127.0.0.1:8080/appointment/getCalendar',
+            'https://upmed-api.herokuapp.com/appointment/getCalendar',
             json=payload)
         self.assertEqual(200, response.status_code)
 
@@ -170,7 +170,7 @@ class AppointmentApiTestCase(unittest.TestCase):
         payload = {'token': hcp_token,
                    'id': appointment_token}
         response = requests.post(
-            'http://127.0.0.1:8080/appointment/getByToken',
+            'https://upmed-api.herokuapp.com/appointment/getByToken',
             json=payload)
         self.assertEqual(200, response.status_code)
 
@@ -180,7 +180,7 @@ class AppointmentApiTestCase(unittest.TestCase):
             'id': appointment_token
         }
         response = requests.post(
-            'http://127.0.0.1:8080/appointment/delete_appointment',
+            'https://upmed-api.herokuapp.com/appointment/delete_appointment',
             json=payload)
         self.assertEqual(200, response.status_code)
 

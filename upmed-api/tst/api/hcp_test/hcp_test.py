@@ -11,7 +11,6 @@ from src.models.enums import Status
 from src.util.util import Auth
 import time
 
-
 """
 Unittest
 
@@ -236,7 +235,7 @@ class HCPTestCase(unittest.TestCase):
                    'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'
                    }
 
-        response = requests.post('http://127.0.0.1:8080/hcp/signUp',
+        response = requests.post('https://upmed-api.herokuapp.com/hcp/signUp',
                                  json=payload)
         hcp_id_r = response.json()
         hcp_id = hcp_id_r['id']
@@ -247,13 +246,13 @@ class HCPTestCase(unittest.TestCase):
         payload = {'id': "hw2735",
                    'email': "hw2735@columbia.edu"}
         response = requests.post(
-            'http://127.0.0.1:8080/hcp/logIn',
+            'https://upmed-api.herokuapp.com/hcp/logIn',
             json=payload)
         hcp = response.json()
         self.assertEqual(200, response.status_code)
         self.assertEqual('hw2735', hcp['id'])
 
-    def test_set_health_event_test(self):
+    def test_setRecords(self):
         payload = {'token': HCPTestCase.hcp_token,
                    'id': 'aoc1989',
                    'health': [
@@ -266,7 +265,7 @@ class HCPTestCase(unittest.TestCase):
                    ]
                    }
         response = requests.post(
-            'http://127.0.0.1:8080/hcp/setRecords',
+            'https://upmed-api.herokuapp.com/hcp/setRecords',
             json=payload)
         self.assertEqual(201, response.status_code)
 
@@ -274,7 +273,7 @@ class HCPTestCase(unittest.TestCase):
         payload = {'token': HCPTestCase.hcp_token,
                    'id': 'aoc1989,hw2735,1605505365'}
         response = requests.post(
-            'http://127.0.0.1:8080/hcp/notify',
+            'https://upmed-api.herokuapp.com/hcp/notify',
             json=payload)
         self.assertEqual(200, response.status_code)
 
@@ -284,7 +283,56 @@ class HCPTestCase(unittest.TestCase):
             'token': HCPTestCase.hcp_token
         }
         response = requests.post(
-            'http://127.0.0.1:8080/hcp/delete',
+            'https://upmed-api.herokuapp.com/hcp/delete',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
+    def test_getByToken(self):
+        payload = {'token': HCPTestCase.hcp_token}
+        response = requests.post(
+            'https://upmed-api.herokuapp.com/hcp/getByToken',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
+    def test_setRecord(self):
+        payload = {'token': HCPTestCase.hcp_token,
+                   'id': 'aoc1989',
+                   'health': [
+                       {
+                           'date': time.time(),
+                           'event': 'schizophrenia',
+                           'remarks': 'Strong violent tendency',
+                           'status': 0
+                       }
+                   ]
+                   }
+        response = requests.post(
+            'https://upmed-api.herokuapp.com/hcp/setRecord',
+            json=payload)
+        self.assertEqual(201, response.status_code)
+
+    def test_editProfile(self):
+        payload = {'id': "hw0000",
+                   'email': "hw0000@columbia.edu",
+                   'firstName': "Kevin",
+                   'lastName': 'Wong',
+                   'phone': "000-000-1360",
+                   'specialty': "Oncology",
+                   'profilePicture': '',
+                   'calendar': [],
+                   'title': 'consultant',
+                   'patients': ['aoc1989']
+                   }
+        response = requests.post(
+            'https://upmed-api.herokuapp.com/hcp/editProfile',
+            json=payload)
+        hcp = response.json()
+        self.assertEqual(200, response.status_code)
+
+    def test_getpatients(self):
+        payload = {'token': HCPTestCase.hcp_token}
+        response = requests.post(
+            'https://upmed-api.herokuapp.com/hcp/getpatients',
             json=payload)
         self.assertEqual(200, response.status_code)
 

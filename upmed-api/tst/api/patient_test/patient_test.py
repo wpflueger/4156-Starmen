@@ -10,7 +10,6 @@ from src.models.hours import Hours
 from src.models.enums import Status
 from src.util.util import Auth
 
-
 """
 Patient Endpoint Tests
 ----------Heroku Imports--------------
@@ -186,7 +185,7 @@ class PatientTestCase(unittest.TestCase):
                    'smoker': 0}
 
         response = requests.post(
-            'http://127.0.0.1:8080/patient/signUp',
+            'https://upmed-api.herokuapp.com/patient/signUp',
             json=payload)
 
         patient_resp = response.json()
@@ -197,7 +196,7 @@ class PatientTestCase(unittest.TestCase):
         payload = {'id': "jb0000",
                    'email': "joebiden@democrat.edu"}
         response = requests.post(
-            'http://127.0.0.1:8080/patient/logIn',
+            'https://upmed-api.herokuapp.com/patient/logIn',
             json=payload)
         patient_resp = response.json()
         self.assertEqual(200, response.status_code)
@@ -206,21 +205,21 @@ class PatientTestCase(unittest.TestCase):
     def test_getbytoken_test(self):
         payload = {'token': PatientTestCase.patient_token}
         response = requests.post(
-            'http://127.0.0.1:8080/patient/getByToken',
+            'https://upmed-api.herokuapp.com/patient/getByToken',
             json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_getRecords_test(self):
         payload = {'token': PatientTestCase.patient_token}
         response = requests.post(
-            'http://127.0.0.1:8080/patient/getRecords',
+            'https://upmed-api.herokuapp.com/patient/getRecords',
             json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_remove_test(self):
         payload = {'id': 'jb0000'}
         response = requests.post(
-            'http://127.0.0.1:8080/patient/delete',
+            'https://upmed-api.herokuapp.com/patient/delete',
             json=payload)
         self.assertEqual(200, response.status_code)
 
@@ -242,21 +241,30 @@ class PatientTestCase(unittest.TestCase):
                    'doctors': ["hw2735"]
                    }
         response = requests.post(
-            'http://127.0.0.1:8080/patient/editProfile',
+            'https://upmed-api.herokuapp.com/patient/editProfile',
             json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_gethcps_test(self):
         payload = {'token': PatientTestCase.patient_token}
         response = requests.post(
-            'http://127.0.0.1:8080/patient/getHCPs',
+            'https://upmed-api.herokuapp.com/patient/getHCPs',
             json=payload)
         self.assertEqual(200, response.status_code)
 
     def test_get_all_test(self):
         payload = {'token': PatientTestCase.patient_token}
         response = requests.post(
-            'http://127.0.0.1:8080/patient/getAll',
+            'https://upmed-api.herokuapp.com/patient/getAll',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
+    def test_set_profile_picture(self):
+        payload = {'token': PatientTestCase.patient_token,
+                   'profilePicture': 'https://upload.wikimedia.org/wikipedia/commons/b/b5'
+                                     '/191125_Taylor_Swift_at_the_2019_American_Music_Awards_%28cropped%29.png'}
+        response = requests.post(
+            'https://upmed-api.herokuapp.com/patient/getRecords',
             json=payload)
         self.assertEqual(200, response.status_code)
 
