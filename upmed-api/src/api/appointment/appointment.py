@@ -1,13 +1,12 @@
-from flask import Blueprint, request, jsonify, make_response, json
-from src.util.firebase.db import Database
-from src.util.util import Auth
-from src.models.patient import Patient
-from src.models.hcp import HCP
-from src.models.health_event import HealthEvent
-from src.models.hours import Hours
-from src.models.day import Day
-from src.util.util import Twilio
-from src.models.appointment import Appointment
+from flask import Blueprint, request, jsonify, make_response
+from util.firebase.db import Database
+from util.util import Auth
+from models.appointment import Appointment
+
+import sys
+import os
+from os.path import join
+sys.path.append(join(os.getcwd(), '../..'))
 
 """
 Appointment API
@@ -41,7 +40,7 @@ auth = Auth()
 appointment_endpoints = Blueprint('appointment', __name__)
 
 
-@appointment_endpoints.route('/', methods=['POST'])
+@appointment_endpoints.route('/')
 def root():
     """
     Deafault Route
@@ -49,7 +48,7 @@ def root():
     Returns:
         reponse: string
     """
-    return make_response(jsonify("Hello World")), 200
+    return "appointment root"
 
 
 @appointment_endpoints.route('/getByToken', methods=['POST'])
@@ -66,7 +65,6 @@ def get_by_token():
         200 OK
         (Appointment object in JSON format)
     """
-    print(request.get_json())
     auth_token = request.get_json().get('token')
     if auth_token:
         try:
@@ -125,7 +123,6 @@ def get_calendar():
         200 OK
         ( List[AppointmentId] )
     """
-    print(request.get_json())
     auth_token = request.get_json().get('token')
 
     if auth_token:
@@ -180,7 +177,6 @@ def create_appointment():
         appointmentId: string
     }
     """
-    print(request.get_json())
     auth_token = request.get_json().get('token')
     if auth_token:
         pid, utype = Auth.decode_auth_token(auth_token)

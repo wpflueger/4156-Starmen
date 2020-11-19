@@ -1,8 +1,18 @@
-from src.models import HCP, Hours, Day, HealthEvent, Patient, Status, Appointment
-from src.util import Database, Auth, Twilio
 from flask import Blueprint, request, jsonify, make_response
-
+from util.firebase.db import Database
+from util.util import Auth, Twilio
+from models.hcp import HCP
+from models.hours import Hours
+from models.day import Day
+from models.health_event import HealthEvent
+from models.patient import Patient
+from models.appointment import Appointment
 import datetime
+
+import sys
+import os
+from os.path import join
+sys.path.append(join(os.getcwd(), '../..'))
 
 """HCP API Endpoints
 
@@ -34,7 +44,6 @@ HTTP Response: JSON
 """
 
 # Setup HCP and Patient Document Collections
-
 db = Database()
 hcpdb = db.getHCP()
 pat = db.getPatients()
@@ -64,7 +73,6 @@ def login():
     try:
         pid = request.json['id']
         email = request.json['email']
-        print(email)
         res = hcpdb.document(str(pid)).get()
         res = res.to_dict()
         if res['email'] == email:
@@ -530,6 +538,92 @@ def notify():
         return make_response(jsonify(response_object)), 401
 
 
+@hcp_endpoints.route('/testNumber', methods=['POST'])
+def test_number():
+    """
+    Notify patient of appoint
+        Request{
+                token: string
+                appointment_id: string
+        }
+    :return: Response
+    """
+
+    auth_token = request.get_json().get('token')
+    if auth_token:
+        hid, utype = Auth.decode_auth_token(auth_token)
+        post_data = request.get_json()
+        # print(f'{hid} and {utype}')
+        if utype == "HCP":
+            try:
+                appointment_id = post_data.get('id')
+                appointment_resp = appointmentsdb.document(
+                    str(appointment_id)).get().to_dict()
+                appointment = Appointment(
+                    id=appointment_resp['id'],
+                    date=appointment_resp['date'],
+                    duration=appointment_resp['duration'],
+                    doctor=appointment_resp['doctor'],
+                    patient=appointment_resp['patient'],
+                    subject=appointment_resp['subject'],
+                    notes=appointment_resp['notes'],
+                    videoUrl=appointment_resp['videoUrl']
+                )
+                patient = pat.document(
+                    str(appointment.patient)).get().to_dict()
+                resp = Patient(
+                    id=patient['id'],
+                    firstName=patient['firstName'],
+                    lastName=patient['lastName'],
+                    phone=patient['phone'],
+                    email=patient['email'],
+                    dateOfBirth=patient['dateOfBirth'],
+                    sex=patient['sex'],
+                    profilePicture=patient['profilePicture'],
+                    height=patient['height'],
+                    weight=patient['weight'],
+                    drinker=patient['drinker'],
+                    smoker=patient['smoker'],
+                    calendar=patient['calendar'],
+                    doctors=patient['doctors'],
+                    health=patient['health']
+                )
+
+                client = twilio.connect()
+                message = client.messages.create(
+                    body=f"Hi {resp.firstName} you have an appointment at "
+                         f"{datetime.datetime.fromtimestamp(appointment.date / 1e3)} join at "
+                    f"{appointment.videoUrl}",
+                    from_='+19036182297',
+                    to=f'+1{str(resp.phone).replace("", "")}')
+                print(message)
+                print(datetime.datetime.fromtimestamp(appointment.date / 1e3))
+                res = {
+                    "Success": True
+                }
+
+            except Exception as e:
+                print(f"Unable to find {post_data.get('id')} because {e}")
+                res = {
+                    "Success": False
+                }
+                return make_response(jsonify(res)), 200
+
+            return make_response(jsonify(res)), 200
+        else:
+            response_object = {
+                'Success': False,
+                'message': nonHCP
+            }
+            return make_response(jsonify(response_object)), 401
+    else:
+        response_object = {
+            'status': 'fail',
+            'message': invalid_token
+        }
+        return make_response(jsonify(response_object)), 401
+
+
 @hcp_endpoints.route('/editProfile', methods=['POST'])
 def edit_hcp_profile():
     """
@@ -817,7 +911,7 @@ def set_health_events():
             except Exception as e:
                 return f"Unable to find {post_data.get('id')} because {e}", 404
 
-            return make_response(jsonify(resp.health)), 201
+            return make_response(jsonify(resp.health)), 200
         else:
             response_object = {
                 'Success': False,
@@ -906,7 +1000,6 @@ def set_profile_picture():
     auth_token = request.get_json().get('token')
     if auth_token:
         hid, utype = Auth.decode_auth_token(auth_token)
-        # hcp = hcpdb.document(hid).get().to_dict()
         pic = request.get_json().get('profilePicture')
         hcpdb.document(str(hid)).update({
             "profilePicture": pic

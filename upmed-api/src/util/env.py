@@ -1,15 +1,15 @@
-from dotenv import load_dotenv
-from typing import List
 import os
 import sys
 from os.path import join, realpath, dirname
 
 sys.path.append(join(os.getcwd(), '..'))
 
+from typing import List
+
+from dotenv import load_dotenv
 
 env_path = join(dirname(realpath(__file__)), '../../.env')
 load_dotenv(dotenv_path=env_path)
-
 
 class Env:
     @staticmethod
@@ -40,6 +40,9 @@ class Env:
     def TWILIO_AUTH_TOKEN() -> str:
         return os.getenv("TWILIO_AUTH_TOKEN")
 
+    @staticmethod
+    def USE_CORS() -> bool:
+        return os.getenv("USE_CORS") == '1'
 
 # Ensure .env file is up to date, or exit promptly
 missing_envs: List[str] = []

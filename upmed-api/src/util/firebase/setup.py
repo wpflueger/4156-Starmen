@@ -6,7 +6,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-from simplecrypt import encrypt, decrypt
+from simplecrypt import decrypt
 
 from ..env import Env
 

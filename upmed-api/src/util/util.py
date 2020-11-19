@@ -11,7 +11,7 @@ Util and helper functions
 """
 
 
-class Auth():
+class Auth:
     """ TOKEN FUCNTIONS"""
 
     def encode_auth_token(self, user_id, type):

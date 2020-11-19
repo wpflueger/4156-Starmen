@@ -1,11 +1,15 @@
 from flask import Blueprint, request, jsonify, make_response, json
-from src.util.firebase.db import Database
-from src.util.util import Auth
-from src.models.patient import Patient
-from src.models.hcp import HCP
-from src.models.health_event import HealthEvent
-from src.models.hours import Hours
-from src.models.day import Day
+from util.firebase.db import Database
+from util.util import Auth
+from models.patient import Patient
+from models.hcp import HCP
+from models.hours import Hours
+from models.day import Day
+
+import sys
+import os
+from os.path import join
+sys.path.append(join(os.getcwd(), '../..'))
 
 """
 Patient API Endpoints
@@ -280,7 +284,7 @@ def edit_profile():
             email=post_data.get('email'),
             dateOfBirth=patient_resp['dateOfBirth'],
             sex=patient_resp['sex'],
-            profilePicture=post_data.get('profilePicture'),
+            profilePicture=patient_resp['profilePicture'],
             height=post_data.get('height'),
             weight=post_data.get('weight'),
             drinker=post_data.get('drinker'),
@@ -289,6 +293,11 @@ def edit_profile():
             doctors=patient_resp['doctors'],
             health=patient_resp['health']
         )
+
+        try:
+            patient.profilePicture = post_data.get('profilePicture')
+        except KeyError:
+            patient.profilePicture = patient_resp['profilePicture']
 
         pat.document(patient.id).set({
             "id": patient.id,
@@ -497,7 +506,6 @@ def set_profile_picture():
     auth_token = request.get_json().get('token')
     if auth_token:
         pid, utype = Auth.decode_auth_token(auth_token)
-        # hcp = hcpdb.document(hid).get().to_dict()
         pic = request.get_json().get('profilePicture')
         print(pid)
         print(pic)

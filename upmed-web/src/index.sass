@@ -102,6 +102,9 @@ textarea:focus, input:focus, *:focus
 .justify-content-stretch
 	justify-content: stretch
 
+.word-wrap
+	word-wrap: break-word
+
 /**
  *  Shadows
  */
@@ -124,6 +127,25 @@ textarea:focus, input:focus, *:focus
 
 $w-desktop: 0 4rem;
 $w-mobile: 2rem 1rem;
+
+/**
+ *  Opacity
+ */
+
+.o-0
+	opacity: 0
+
+.o-25
+	opacity: 0.25
+
+.o-50
+	opacity: 0.5
+
+.o-75
+	opacity: 0.75
+
+.o-100
+	opacity: 1
 
 /**
  *  Font Transforms
@@ -263,7 +285,11 @@ $w-mobile: 2rem 1rem;
 	line-height: 2
 
 /**
- *	Overwrites
+ *	Overrides
  */
 .sb-avatar__image
 	object-fit: cover !important
+
+.fc-daygrid-event-harness
+	@extend .unselectable
+	cursor: pointer !important
