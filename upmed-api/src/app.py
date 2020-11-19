@@ -1,10 +1,10 @@
 import os
 
-from util.env import Env
+from src.util.env import Env
 from flask import Flask
-from flask_cors import CORS
+from api.api import api_endpoints
 
-from api import api_endpoints
+from flask_cors import CORS
 
 """
 Create app and register blueprints

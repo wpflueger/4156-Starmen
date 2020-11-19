@@ -1,5 +1,5 @@
 from twilio.rest import Client
-from .env import Env
+from util.env import Env
 import datetime
 import jwt
 import sys

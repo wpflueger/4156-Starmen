@@ -1,6 +1,5 @@
 import unittest
 import requests
-import json
 from src.util.firebase.db import Database
 from src.models.patient import Patient
 from src.models.hcp import HCP
@@ -267,7 +266,7 @@ class HCPTestCase(unittest.TestCase):
         response = requests.post(
             'https://upmed-api.herokuapp.com/hcp/setRecords',
             json=payload)
-        self.assertEqual(201, response.status_code)
+        self.assertEqual(200, response.status_code)
 
     def test_notify_test(self):
         payload = {'token': HCPTestCase.hcp_token,
@@ -332,7 +331,23 @@ class HCPTestCase(unittest.TestCase):
     def test_getpatients(self):
         payload = {'token': HCPTestCase.hcp_token}
         response = requests.post(
-            'https://upmed-api.herokuapp.com/hcp/getpatients',
+            'https://upmed-api.herokuapp.com/hcp/getPatients',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
+    def test_getAll(self):
+        payload = {'token': HCPTestCase.hcp_token}
+        response = requests.post(
+            'https://upmed-api.herokuapp.com/hcp/getAll',
+            json=payload)
+        self.assertEqual(200, response.status_code)
+
+    def test_set_profile_picture(self):
+        payload = {'token': HCPTestCase.hcp_token,
+                   'profilePicture': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed'
+                                     '/Elon_Musk_Royal_Society.jpg/440px-Elon_Musk_Royal_Society.jpg'}
+        response = requests.post(
+            'https://upmed-api.herokuapp.com/hcp/setProfilePicture',
             json=payload)
         self.assertEqual(200, response.status_code)
 

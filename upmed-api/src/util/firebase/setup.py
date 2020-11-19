@@ -30,9 +30,9 @@ with open(enc_cert_path, mode="rb") as file:
 Decrypt and write decrypted file
 """
 decrypted_cert = decrypt(Env.FIREBASE_PRIVATE_KEY(), encrypted_cert)
-with open(dec_cert_path, mode="wb") as file:
+with open(dec_cert_path, mode='wb') as file:
     file.write(decrypted_cert)
-
+    file.close()
 """
 Ensure decrypted JSON certificate is deleted on exit
 """
