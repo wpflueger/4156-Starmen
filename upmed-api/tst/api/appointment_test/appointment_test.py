@@ -1,15 +1,13 @@
 import unittest
-import json
 import requests
-from flask import jsonify
 
-from ....src.util.firebase.db import Database
-from ....src.models.patient import Patient
-from ....src.models.hcp import HCP
-from ....src.models.day import Day
-from ....src.models.hours import Hours
-from ....src.models.enums import Status
-from ....src.util.util import Auth
+from src.util.firebase.db import Database
+from src.models.patient import Patient
+from src.models.hcp import HCP
+from src.models.day import Day
+from src.models.hours import Hours
+from src.models.enums import Status
+from src.util.util import Auth
 import time
 """
 Appoinyment endpoint
@@ -135,6 +133,7 @@ class AppointmentApiTestCase(unittest.TestCase):
 
     def test_root(self):
         response = requests.post('http://127.0.0.1:8080/appointment/')
+        #response = requests.post('https://upmed-api.herokuapp.com/appointment/')
         self.assertEqual(200, response.status_code)
 
     def test_createAppointment_test(self, hcp_token=hcp_token):

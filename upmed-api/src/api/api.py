@@ -1,8 +1,11 @@
-from ..util import SuperBlueprint
-
-from .hcp import hcp_endpoints
-from .patient import patient_endpoints
 from .appointment import appointment_endpoints
+from .patient import patient_endpoints
+from .hcp import hcp_endpoints
+from ..util import SuperBlueprint
+import sys
+import os
+from os.path import join
+sys.path.append(join(os.getcwd(), '..'))
 
 """
 Register appointment blueprints

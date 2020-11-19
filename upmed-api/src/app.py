@@ -1,8 +1,8 @@
 import os
-from .util.env import Env
+from src.util.env import Env
 from flask import Flask
 
-from .api import api_endpoints
+from src.api import api_endpoints
 from flask_cors import CORS
 
 """
