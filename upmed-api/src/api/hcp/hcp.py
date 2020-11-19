@@ -1,13 +1,7 @@
+from src.models import HCP, Hours, Day, HealthEvent, Patient, Status, Appointment
+from src.util import Database, Auth, Twilio
 from flask import Blueprint, request, jsonify, make_response
-from ....src.util.firebase.db import Database
-from ....src.util.util import Auth, Twilio
-from ....src.models.hcp import HCP
-from ....src.models.hours import Hours
-from ....src.models.day import Day
-from ....src.models.health_event import HealthEvent
-from ....src.models.patient import Patient
-from ....src.models.enums import Status
-from ....src.models.appointment import Appointment
+
 import datetime
 
 """HCP API Endpoints
@@ -40,6 +34,7 @@ HTTP Response: JSON
 """
 
 # Setup HCP and Patient Document Collections
+
 db = Database()
 hcpdb = db.getHCP()
 pat = db.getPatients()

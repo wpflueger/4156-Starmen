@@ -1,1 +1,1 @@
-from .appointment_test import *
+from tst.api.appointment_test import *

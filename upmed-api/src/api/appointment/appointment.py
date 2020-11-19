@@ -1,13 +1,13 @@
 from flask import Blueprint, request, jsonify, make_response, json
-from ....src.util.firebase.db import Database
-from ....src.util.util import Auth
-from ....src.models.patient import Patient
-from ....src.models.hcp import HCP
-from ....src.models.health_event import HealthEvent
-from ....src.models.hours import Hours
-from ....src.models.day import Day
-from ....src.util.util import Twilio
-from ....src.models.appointment import Appointment
+from src.util.firebase.db import Database
+from src.util.util import Auth
+from src.models.patient import Patient
+from src.models.hcp import HCP
+from src.models.health_event import HealthEvent
+from src.models.hours import Hours
+from src.models.day import Day
+from src.util.util import Twilio
+from src.models.appointment import Appointment
 
 """
 Appointment API

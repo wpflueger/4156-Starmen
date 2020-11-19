@@ -1,14 +1,14 @@
 import unittest
 
 import requests
-from ....src.util.firebase.db import Database
-from ....src.models.patient import Patient
-from ....src.models.hcp import HCP
-from ....src.models.appointment import Appointment
-from ....src.models.day import Day
-from ....src.models.hours import Hours
-from ....src.models.enums import Status
-from ....src.util.util import Auth
+from src.util.firebase.db import Database
+from src.models.patient import Patient
+from src.models.hcp import HCP
+from src.models.appointment import Appointment
+from src.models.day import Day
+from src.models.hours import Hours
+from src.models.enums import Status
+from src.util.util import Auth
 
 
 """
