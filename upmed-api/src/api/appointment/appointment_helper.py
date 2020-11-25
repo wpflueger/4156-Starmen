@@ -317,6 +317,12 @@ def video(post_data):
         appointments_output = appointmentsdb.document(
             str(appointment_id)).get().to_dict()
         print(appointments_output)
+        if not (pid == appointments_output['patient'] or pid == appointments_output['doctor']):
+            response_object ={
+                "Success": False,
+                "message": "Id not in appointment, unable to access room"
+            }
+            return response_object, 401
 
         conversation = get_chatroom(str(appointment_id))
 
