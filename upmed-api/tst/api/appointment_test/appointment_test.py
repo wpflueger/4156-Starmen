@@ -1,8 +1,8 @@
 import unittest
 import time
-from src import Database, Patient, HCP, Day, Hours, Status, Auth  # noqa
-from src.api.appointment import appointment_helper
-from unittest.mock import MagicMock, Mock
+from src import Patient, HCP, Day, Hours, Status, Appointment, Auth  # noqa
+from tst.mock_helpers import MockHCP, MockPatient, MockAppointment
+from unittest.mock import MagicMock, Mock, patch
 from sys import path
 from os.path import join, dirname
 
@@ -12,148 +12,29 @@ path.append(join(dirname(__file__), '../../..'))
 Patient Endpoint Tests
 Note: run as python3 -m upmed-api.tst.api.appointment_test.appointment_test
 """
-appointment_token = ''
+appointment_token = 'aoc1989,hw2735,1605841671.366644'
+mockpatient = MockPatient()
+mockhcp = MockHCP()
+mockappointment = MockAppointment()
 
-pdb = Database()
-set_func = Mock()
-set_func.set = MagicMock(return_value=None)
-pdb.document = MagicMock(return_value=set_func)
-hcp_db = pdb.getHCP()
-patient_db = pdb.getPatients()
-appointmentsdb = pdb.getAppointments()
-
-from sys import path
-from os.path import join, dirname
 path.append(join(dirname(__file__), '../../..'))
-
-from src import Database, Patient, HCP, Day, Hours, Status, Auth  # noqa
 
 """
 Patient Endpoint Tests
 Note: run as python3 -m upmed-api.tst.api.appointment_test.appointment_test
 """
-appointment_token = ''
 
 
-def create_dummy_data():
-    # Add some dummy patient and hcp
-    week = []
-    for i in range(0, 7):
-        week.append(Day(startTime=540, endTime=1020, ))
-    schedule = Hours(
-        sunday=week[0],
-        monday=week[1],
-        tuesday=week[2],
-        wednesday=week[3],
-        thursday=week[4],
-        friday=week[5],
-        saturday=week[6])
-    dummy_hcp = HCP(
-        id="hw2735",
-        firstName="Kevin",
-        lastName="Wong",
-        phone="+19175587800",
-        email="hw2735@columbia.edu",
-        specialty="Accident and Emergency",
-        profilePicture='',
-        calendar=[],
-        title='Resident',
-        patients=[''],
-        hours=schedule)
-
-    dummy_patient = Patient(
-        id="aoc1989",
-        firstName="Alexandria",
-        lastName="Ocasio-Cortez",
-        phone="0000000000",
-        email="aoc@democrat.com",
-        dateOfBirth="1989-10-13",
-        sex='F',
-        profilePicture='',
-        height=150,
-        weight=60,
-        drinker=Status.NEVER,
-        smoker=Status.NEVER,
-        calendar=[],
-        health=[],
-        doctors=["hw2735"]
-    )
-    return dummy_hcp, dummy_patient
-
-
-class AppointmentApiTestCase(unittest.TestCase):
-    auth = Auth()
-    dummy_hcp, dummy_patient = create_dummy_data()
-    hours = []
-    time = []
-    time.append(dummy_hcp.hours.sunday.startTime)
-    time.append(dummy_hcp.hours.sunday.endTime)
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.monday.startTime
-    time[1] = dummy_hcp.hours.monday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.tuesday.startTime
-    time[1] = dummy_hcp.hours.tuesday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.wednesday.startTime
-    time[1] = dummy_hcp.hours.wednesday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.thursday.startTime
-    time[1] = dummy_hcp.hours.thursday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.friday.startTime
-    time[1] = dummy_hcp.hours.friday.endTime
-    hours.append(str(time))
-    time[0] = dummy_hcp.hours.saturday.startTime
-    time[1] = dummy_hcp.hours.saturday.endTime
-    hours.append(str(time))
-
-
-    # hcp_db.document(dummy_hcp.id).set({
-    #     "id": dummy_hcp.id,
-    #     "firstName": dummy_hcp.firstName,
-    #     "lastName": dummy_hcp.lastName,
-    #     "phone": dummy_hcp.phone,
-    #     "email": dummy_hcp.email,
-    #     "profilePicture": dummy_hcp.profilePicture,
-    #     "calendar": dummy_hcp.calendar,
-    #     "specialty": dummy_hcp.specialty,
-    #     "title": dummy_hcp.title,
-    #     "hours": hours,
-    #     "patients": dummy_hcp.patients
-    # })
-    # patient_db.document(dummy_patient.id).set({
-    #     "id": dummy_patient.id,
-    #     "firstName": dummy_patient.firstName,
-    #     "lastName": dummy_patient.lastName,
-    #     "phone": dummy_patient.phone,
-    #     "email": dummy_patient.email,
-    #     "dateOfBirth": dummy_patient.dateOfBirth,
-    #     "sex": dummy_patient.sex,
-    #     "profilePicture": dummy_patient.profilePicture,
-    #     "height": dummy_patient.height,
-    #     "weight": dummy_patient.weight,
-    #     "drinker": dummy_patient.drinker.value,
-    #     "smoker": dummy_patient.smoker.value,
-    #     "calendar": dummy_patient.calendar,
-    #     "health": dummy_patient.health,
-    #     "doctors": dummy_patient.doctors
-    # })
-\
-
-    auth_token = auth.encode_auth_token(dummy_hcp.id, "HCP")
-    hcp_token = auth_token.decode()
-
-    auth_token = auth.encode_auth_token(dummy_patient.id, "PATIENT")
-    patient_token = auth_token.decode()
-
-    appointment_token = 'aoc1989,hw2735,1605841671.366644'
-\
-
-    def test_createAppointment_test(self, hcp_token=hcp_token):
+class AppointmentTestCase(unittest.TestCase):
+    @patch("api.appointment.appointment_helper.appointmentsdb.document")
+    @patch("api.appointment.appointment_helper.patient_db.document")
+    @patch("api.appointment.appointment_helper.hcp_db.document")
+    def test_createAppointment_test(self, mock1, mock2, mock3):
+        from src.api.appointment import appointment_helper
+        # Define initial payload
         timpstamp = time.time()
         payload = {
-            'token': hcp_token,
+            'token': mockhcp.auth_token,
             'date': timpstamp,
             'duration': 45,
             'hcpid': 'hw2735',
@@ -162,28 +43,107 @@ class AppointmentApiTestCase(unittest.TestCase):
             'notes': 'Follow up for her schizophrenia',
             'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
 
+        # Test normal case
+        response, status_code = appointment_helper.create_appointment(payload)
+        self.assertTrue(mock1.called, "hcp_db.document not being called")
+        self.assertTrue(mock2.called, "patient_db.document not being called")
+        self.assertTrue(mock3.called, "appointmentsdb.document not being called")
+        self.assertEqual(200, status_code)
+
+        # Test using patient token
+        payload = {
+            'token': mockpatient.auth_token,
+            'date': timpstamp,
+            'duration': 45,
+            'hcpid': 'aoc1989',
+            'patient': 'hw2735',
+            'subject': 'Follow Up',
+            'notes': 'Follow up for schizophrenia',
+            'videoUrl': 'https://www.youtube.com/watch?v=dMTQKFS1tpA'}
         response, status_code = appointment_helper.create_appointment(payload)
         self.assertEqual(200, status_code)
 
-    def test_getCalendar_test(self, hcp_token=hcp_token):
-        payload = {'token': hcp_token}
+        # Test using wrong token
+        payload['token'] = None
+        response, status_code = appointment_helper.create_appointment(payload)
+        self.assertEqual(401, status_code)
+
+    @patch("api.appointment.appointment_helper.appointmentsdb.document")
+    @patch("api.appointment.appointment_helper.patient_db.document")
+    @patch("api.appointment.appointment_helper.hcp_db.document")
+    def test_getCalendar_test(self, mock1, mock2, mock3):
+        from src.api.appointment import appointment_helper
+        # HCP case
+        payload = {'token': mockhcp.auth_token}
         response, status_code = appointment_helper.appointment_get_calendar(payload)
         self.assertEqual(200, status_code)
 
-    def test_getByToken_test(self, hcp_token=hcp_token):
-        payload = {'token': hcp_token,
-                   'id': 'aoc1989,hw2735,1605841671.366644'}
+        # Patient case
+        payload = {'token': mockpatient.auth_token}
+        response, status_code = appointment_helper.appointment_get_calendar(payload)
+        self.assertEqual(200, status_code)
+
+        # Invalid token case
+        payload = {'token': None}
+        response, status_code = appointment_helper.appointment_get_calendar(payload)
+        self.assertEqual(401, status_code)
+
+        # Invalid token case
+        from src.util.util import Auth
+        auth = Auth()
+        payload = {'token': auth.encode_auth_token('pyy2020', "NURSE")}
+        response, status_code = appointment_helper.appointment_get_calendar(payload)
+        self.assertEqual(401, status_code)
+
+
+    @patch("api.appointment.appointment_helper.appointmentsdb.document")
+    def test_getByToken_test(self, mock1):
+        from src.api.appointment import appointment_helper
+        from src.util.util import Auth
+        auth = Auth()
+
+        payload = {'token': mockhcp.auth_token,
+                   'id': appointment_token}
+        mock1.return_value = mockappointment.appointment
+        response, status_code = appointment_helper.appointment_get_by_token(payload)
+        self.assertEqual(200, status_code)
+
+        payload = {'token': None,
+                   'id': appointment_token}
         response, status_code = appointment_helper.appointment_get_by_token(payload)
         self.assertEqual(401, status_code)
 
-    def test_delete_appointment_test(self, hcp_token=hcp_token):
+        payload = {'token': auth.encode_auth_token('pyy2020', "NURSE"),
+                   'id': appointment_token}
+        response, status_code = appointment_helper.appointment_get_by_token(payload)
+        self.assertEqual(401, status_code)
+
+    @patch("api.appointment.appointment_helper.appointmentsdb.document")
+    @patch("api.appointment.appointment_helper.patient_db.document")
+    @patch("api.appointment.appointment_helper.hcp_db.document")
+    def test_delete_appointment_test(self, mock1, mock2, mock3):
+        from src.api.appointment import appointment_helper
         payload = {
-            'token': hcp_token,
-            'id': 'aoc1989,hw2735,1605841671.366644'
+            'token': mockhcp.auth_token,
+            'id': appointment_token
         }
         response, status_code = appointment_helper.delete_appointment(payload)
         self.assertEqual(200, status_code)
 
+        payload = {
+            'token': None,
+            'id': None
+        }
+        response, status_code = appointment_helper.delete_appointment(payload)
+        self.assertEqual(401, status_code)
+
+        # Invalid token case
+        from src.util.util import Auth
+        auth = Auth()
+        payload = {'token': auth.encode_auth_token('pyy2020', "NURSE"),
+                   'id': appointment_token}
+        response, status_code = appointment_helper.appointment_get_calendar(payload)
+        self.assertEqual(401, status_code)
 
 
 if __name__ == '__main__':

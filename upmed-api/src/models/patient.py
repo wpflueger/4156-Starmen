@@ -27,22 +27,22 @@ class Patient:
     doctors: List[DoctorId]
 
     def __init__(
-        self,
-        id: PatientId,
-        firstName: str,
-        lastName: str,
-        calendar: List[AppointmentId],
-        phone: str,
-        email: str,
-        dateOfBirth: str,
-        sex: str,
-        profilePicture: Optional[str],
-        height: int,
-        weight: int,
-        drinker: Status,
-        smoker: Status,
-        health: List[HealthEvent],
-        doctors: List[DoctorId],
+            self,
+            id: PatientId,
+            firstName: str,
+            lastName: str,
+            calendar: List[AppointmentId],
+            phone: str,
+            email: str,
+            dateOfBirth: str,
+            sex: str,
+            profilePicture: Optional[str],
+            height: int,
+            weight: int,
+            drinker: Status,
+            smoker: Status,
+            health: List[HealthEvent],
+            doctors: List[DoctorId],
     ):
         self.id = id
         self.firstName = firstName
@@ -59,3 +59,4 @@ class Patient:
         self.smoker = smoker
         self.health = health
         self.doctors = doctors
+

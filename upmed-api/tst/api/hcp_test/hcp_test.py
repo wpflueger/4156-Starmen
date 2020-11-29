@@ -10,7 +10,7 @@ path.append(join(dirname(__file__), '../../..'))
 
 
 from src import Database, Patient, Appointment, HCP, Day, Hours, Status, Auth, hcp, Twilio, hcp_signup, hcp_get_all, hcp_login, hcp_delete, hcp_set_record, hcp_get_by_token, hcp_notify, hcp_test_number, hcp_edit_profile, hcp_get_patients, hcp_set_health_events, hcp_set_profile_picture, hcp_set_health_events  # noqa
-from tst.constants import dummy_hcp, dummy_appointment, dummy_patient  # noqa
+#from tst.constants import dummy_hcp, dummy_appointment, dummy_patient  # noqa
 """
 HCP Endpoint Tests
 """
@@ -36,62 +36,62 @@ hcp_token = ''
 
 
 class HCPTestCase(unittest.TestCase):
-def create_dummy_data():
-    # Add some dummy patient and hcp
-    week = []
-    for i in range(0, 7):
-        week.append(Day(startTime=540, endTime=1020, ))
-    schedule = Hours(
-        sunday=week[0],
-        monday=week[1],
-        tuesday=week[2],
-        wednesday=week[3],
-        thursday=week[4],
-        friday=week[5],
-        saturday=week[6])
+    def create_dummy_data():
+        # Add some dummy patient and hcp
+        week = []
+        for i in range(0, 7):
+            week.append(Day(startTime=540, endTime=1020, ))
+        schedule = Hours(
+            sunday=week[0],
+            monday=week[1],
+            tuesday=week[2],
+            wednesday=week[3],
+            thursday=week[4],
+            friday=week[5],
+            saturday=week[6])
 
-    dummy_hcp = HCP(
-        id="hw2735",
-        firstName="Kevin",
-        lastName="Wong",
-        phone="610-844-1360",
-        email="hw2735@columbia.edu",
-        specialty="Accident and Emergency",
-        profilePicture='',
-        calendar=[],
-        title='Resident',
-        patients=['aoc1989'],
-        hours=schedule)
+        dummy_hcp = HCP(
+            id="hw2735",
+            firstName="Kevin",
+            lastName="Wong",
+            phone="610-844-1360",
+            email="hw2735@columbia.edu",
+            specialty="Accident and Emergency",
+            profilePicture='',
+            calendar=[],
+            title='Resident',
+            patients=['aoc1989'],
+            hours=schedule)
 
-    dummy_patient = Patient(
-        id="aoc1989",
-        firstName="Alexandria",
-        lastName="Ocasio-Cortez",
-        phone="6108441360",
-        email="aoc@democrat.com",
-        dateOfBirth="1989-10-13",
-        sex='F',
-        profilePicture='',
-        height=150,
-        weight=60,
-        drinker=Status.NEVER,
-        smoker=Status.NEVER,
-        calendar=[],
-        health=[],
-        doctors=["hw2735"]
-    )
+        dummy_patient = Patient(
+            id="aoc1989",
+            firstName="Alexandria",
+            lastName="Ocasio-Cortez",
+            phone="6108441360",
+            email="aoc@democrat.com",
+            dateOfBirth="1989-10-13",
+            sex='F',
+            profilePicture='',
+            height=150,
+            weight=60,
+            drinker=Status.NEVER,
+            smoker=Status.NEVER,
+            calendar=[],
+            health=[],
+            doctors=["hw2735"]
+        )
 
-    dummy_appointment = Appointment(
-        id='aoc1989,hw2735,1605505365',
-        date=1605505365,
-        duration=30,
-        doctor='hw2735',
-        patient='aoc1989',
-        subject='follow up',
-        notes='need to check if she is compliant to prescriptions',
-        videoUrl='https://www.youtube.com/watch?v=EsKZHGtSoVA'
-    )
-    return dummy_hcp, dummy_patient, dummy_appointment
+        dummy_appointment = Appointment(
+            id='aoc1989,hw2735,1605505365',
+            date=1605505365,
+            duration=30,
+            doctor='hw2735',
+            patient='aoc1989',
+            subject='follow up',
+            notes='need to check if she is compliant to prescriptions',
+            videoUrl='https://www.youtube.com/watch?v=EsKZHGtSoVA'
+        )
+        return dummy_hcp, dummy_patient, dummy_appointment
 
 
 class HCPTestCase(unittest.TestCase):
@@ -100,7 +100,7 @@ class HCPTestCase(unittest.TestCase):
     hcp_db = pdb.getHCP()
     patient_db = pdb.getPatients()
     appointmentsdb = pdb.getAppointments()
-    dummy_hcp, dummy_patient, dummy_appointment = create_dummy_data()
+    dummy_hcp, dummy_patient, dummy_appointment = HCPTestCase.create_dummy_data()
     hours = []
     time = []
     time.append(dummy_hcp.hours.sunday.startTime)
