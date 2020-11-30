@@ -95,7 +95,6 @@ class AppointmentTestCase(unittest.TestCase):
         response, status_code = appointment_helper.appointment_get_calendar(payload)
         self.assertEqual(401, status_code)
 
-
     @patch("api.appointment.appointment_helper.appointmentsdb.document")
     def test_getByToken_test(self, mock1):
         from src.api.appointment import appointment_helper

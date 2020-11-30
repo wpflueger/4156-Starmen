@@ -1,30 +1,33 @@
-from flask import Blueprint, request, jsonify, make_response, json
-from algoliasearch.search_client import SearchClient  # noqa
+from flask import Blueprint, request, jsonify, make_response
 
 from sys import path
 from os.path import join, dirname
-
 path.append(join(dirname(__file__), '../../..'))
 
-from src.util.firebase.db import Database  # noqa
+#from src.util.firebase.db import Database  # noqa
 from src.util.util import Auth  # noqa
-from src.util.env import Env  # noqa
 from src.models.patient import Patient  # noqa
 from src.models.appointment import Appointment  # noqa
 from src.models.hcp import HCP  # noqa
 from src.models.hours import Hours  # noqa
 from src.models.day import Day  # noqa
 
+
 auth = Auth()
 
 
 def pat_login(db, pid, email):
-    """HCP Logins
+    """Patient Logins
 
     Returns:
             Response: JSON
     """
     try:
+        print(db)
+        print(db.document())
+        print('*******************')
+        print(db.document(str(pid)).get())
+        print('*******************')
         res = db.document(str(pid)).get()
         res = res.to_dict()
         if res['email'] == email:
@@ -38,7 +41,7 @@ def pat_login(db, pid, email):
         else:
             return 0
     except Exception as e:
-        return f"An Error Occurred: {e}"
+        return f"An Error Occured: {e}"
 
 
 def pat_signup(pat, patient):
@@ -64,16 +67,9 @@ def pat_signup(pat, patient):
         "calendar": patient.calendar,
         "health": patient.health,
         "doctors": patient.doctors
-
     })
-    # print("HERE")
-    add_pat(patient)
-    # print("HERE2")
-    if (res):
+    if res:
         auth_token = auth.encode_auth_token(patient.id, utype)
-    else:
-        return 0
-    if (len(auth_token) > 0):
         return auth_token.decode()
     else:
         return 0
@@ -84,7 +80,6 @@ def pat_get_records(pat, pid):
     if patient == 1:
         return 0
     patient = patient.to_dict()
-    print(patient)
     resp = Patient(
         id=patient['id'],
         firstName=patient['firstName'],
@@ -105,7 +100,6 @@ def pat_get_records(pat, pid):
     response_object = []
     for i in resp.health:
         response_object.append(i)
-
     return response_object
 
 
@@ -116,8 +110,6 @@ def pat_delete(db, pid):
 def pat_get_by_token(db, pid):
     try:
         patient = db.document(str(pid)).get()
-        if (patient == 1):
-            return 0
         patient = patient.to_dict()
         resp = Patient(
             id=pid,
@@ -140,17 +132,13 @@ def pat_get_by_token(db, pid):
     except Exception as e:
         response_object = {
             'status': 'fail',
-            'message': 'Unable to find patient.'
+            'message': 'Unable to find patient with error: ' + str(e)
         }
         return jsonify(response_object), False
 
 
 def pat_edit_profile(db, pid, post_data):
-    patient_resp = db.document(str(pid)).get()
-    if patient_resp == 1:
-        return 0
-    patient_resp = patient_resp.to_dict()
-    print(patient_resp)
+    patient_resp = db.document(str(pid)).get().to_dict()
     patient = Patient(
         id=patient_resp['id'],
         firstName=post_data.get('firstName'),
@@ -168,7 +156,6 @@ def pat_edit_profile(db, pid, post_data):
         doctors=patient_resp['doctors'],
         health=patient_resp['health']
     )
-
     try:
         patient.profilePicture = post_data.get('profilePicture')
     except KeyError:
@@ -190,7 +177,6 @@ def pat_edit_profile(db, pid, post_data):
         "calendar": patient.calendar,
         "health": patient.health,
         "doctors": patient.doctors
-
     })
     res = {
         "Success": True
@@ -210,11 +196,7 @@ def pat_get_hcps(pat, hcpdb, pid):
     for i in patient_resp['doctors']:
         week = []
         for _ in range(0, 7):
-            week.append(Day(
-                startTime=-1,
-                endTime=-1,
-            )
-            )
+            week.append(Day(startTime=-1, endTime=-1))
 
         schedule = Hours(
             sunday=week[0],
@@ -321,8 +303,9 @@ def pat_get_all(pat):
         return 2
     pats_return = []
     for patient in pats:
+
         h = patient.to_dict()
-        print(f'{patient.id}=> {h["firstName"]}')
+        print(f'{patient.id}=> {patient}')
         pat_obj = {
             "id": h['id'],
             "firstName": h['firstName'],
@@ -367,59 +350,3 @@ def make_week():
         saturday=week[6]
     )
     return schedule
-
-
-def pat_search(text):
-    print(text)
-    api = Env.ALGOLIA()
-    admin = Env.ALGOLIA_ADMIN()
-    # print(api)
-    # add_pat(pat)
-    client = SearchClient.create(api, admin)
-    index = client.init_index('patients')
-    index.set_settings({"customRanking": ["desc(followers)"]})
-    index.set_settings({"searchableAttributes": ["firstName", "lastName", "phone",
-                                                 "email", "id"]})
-    res = index.search(text)
-
-    # Res is all hits of Patients with matching
-    hits = res['hits']
-
-    pats_return = []
-    # patient = pat.document(str(pid)).get()
-    for h in hits:
-        pat_obj = {
-            "id": h['id'],
-            "firstName": h['firstName'],
-            "lastName": h['lastName'],
-            "email": h['email'],
-            "phone": h['phone'],
-            "profilePicture": h['profilePicture']
-        }
-        pats_return.append(pat_obj)
-
-    return pats_return
-
-def add_pat(patient):
-    api = Env.ALGOLIA()
-    admin = Env.ALGOLIA_ADMIN()
-    client = SearchClient.create(api, admin)
-    index = client.init_index('patients')
-    res = {
-        "id": patient.id,
-        "firstName": patient.firstName,
-        "lastName": patient.lastName,
-        "phone": patient.phone,
-        "email": patient.email,
-        "profilePicture": patient.profilePicture
-    }
-    with open('js.json', 'w') as fp:
-        json.dump(res, fp)
-
-    batch = json.load(open('js.json'))
-    fp.close()
-    try:
-        index.save_object(batch, {'autoGenerateObjectIDIfNotExist': True})
-    except Exception as e:
-        print(f'Error: {e}')
-    return 0

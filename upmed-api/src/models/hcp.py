@@ -45,3 +45,19 @@ class HCP:
         self.profilePicture = profilePicture
         self.patients = patients
         self.hours = hours
+
+    def to_dict(self):
+        output_dict = {
+            'id': self.id,
+            'firstName': self.firstName,
+            'lastName': self.lastName,
+            'title': self.title,
+            'specialty': self.specialty,
+            'phone': self.phone,
+            'email': self.email,
+            'calendar': self.calendar,
+            'profilePicture': self.profilePicture,
+            'patients': self.patients,
+            'hours': self.hours,
+        }
+        return output_dict

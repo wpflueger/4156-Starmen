@@ -60,3 +60,22 @@ class Patient:
         self.health = health
         self.doctors = doctors
 
+    def to_dict(self):
+        output_dict = {
+            'id': self.id,
+            'firstName': self.firstName,
+            'lastName': self.lastName,
+            'calendar': self.calendar,
+            'phone': self.phone,
+            'email': self.email,
+            'dateOfBirth': self.dateOfBirth,
+            'sex': self.sex,
+            'profilePicture': self.profilePicture,
+            'height': self.height,
+            'weight': self.weight,
+            'drinker': self.drinker,
+            'smoker': self.smoker,
+            'health': self.health,
+            'doctors': self.doctors
+        }
+        return output_dict
