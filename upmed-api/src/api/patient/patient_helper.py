@@ -4,7 +4,6 @@ from sys import path
 from os.path import join, dirname
 path.append(join(dirname(__file__), '../../..'))
 
-#from src.util.firebase.db import Database  # noqa
 from src.util.util import Auth  # noqa
 from src.models.patient import Patient  # noqa
 from src.models.appointment import Appointment  # noqa
@@ -23,11 +22,6 @@ def pat_login(db, pid, email):
             Response: JSON
     """
     try:
-        print(db)
-        print(db.document())
-        print('*******************')
-        print(db.document(str(pid)).get())
-        print('*******************')
         res = db.document(str(pid)).get()
         res = res.to_dict()
         if res['email'] == email:
@@ -181,7 +175,6 @@ def pat_edit_profile(db, pid, post_data):
     res = {
         "Success": True
     }
-    print(res)
     return res
 
 
@@ -190,8 +183,6 @@ def pat_get_hcps(pat, hcpdb, pid):
     if patient_resp == 1:
         return 0
     patient_resp = patient_resp.to_dict()
-    print(patient_resp)
-    print(patient_resp['doctors'])
     results = {}
     for i in patient_resp['doctors']:
         week = []
@@ -274,7 +265,6 @@ def pat_get_hcps(pat, hcpdb, pid):
                 "endTime": resp.hours.saturday.endTime
             }
         }
-
         response_object = {
             "id": resp.id,
             "firstName": resp.firstName,
@@ -288,24 +278,18 @@ def pat_get_hcps(pat, hcpdb, pid):
             "hours": hours,
             "patients": resp.patients
         }
-
         entry = {
             i: response_object
         }
-        # print(i)
         results.update(entry)
     return results
 
 
 def pat_get_all(pat):
     pats = pat.stream()
-    if pats == 2:
-        return 2
     pats_return = []
     for patient in pats:
-
         h = patient.to_dict()
-        print(f'{patient.id}=> {patient}')
         pat_obj = {
             "id": h['id'],
             "firstName": h['firstName'],
@@ -314,7 +298,6 @@ def pat_get_all(pat):
             "phone": h['phone'],
             "profilePicture": h['profilePicture']
         }
-
         pats_return.append(pat_obj)
     return pats_return
 
@@ -331,15 +314,9 @@ def make_week():
     Makes a blank schedule
     :return: Hours object
     """
-
     week = []
     for _ in range(0, 7):
-        week.append(Day(
-            startTime=-1,
-            endTime=-1,
-        )
-        )
-
+        week.append(Day(startTime=-1, endTime=-1))
     schedule = Hours(
         sunday=week[0],
         monday=week[1],

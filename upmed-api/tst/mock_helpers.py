@@ -1,4 +1,4 @@
-from src import Database, Patient, HCP, Appointment, Day, Hours, Status, Auth  # noqa
+from src import Database, Patient, HCP, Appointment, Day, Hours, Status, HealthEvent, Auth  # noqa
 from src.util.util import Auth
 
 
@@ -8,6 +8,18 @@ class MockPatient(object):
 
     def __init__(self):
         auth = Auth()
+        event1 = {
+            'date': 2000,
+            'event': "schizophrenia",
+            'remarks': "Poor compliance",
+            'status': Status.ACTIVE
+        }
+        event2 = {
+            'date': 4000,
+            'event': "heart attack",
+            'remarks': "Poor compliance",
+            'status': Status.ACTIVE
+        }
         self.patient = Patient(
             id="aoc1989",
             firstName="Alexandria",
@@ -22,8 +34,8 @@ class MockPatient(object):
             drinker=Status.NEVER,
             smoker=Status.NEVER,
             calendar=['aoc1989,hw2735,1605841671.366644'],
-            health=[],
-            doctors=["hw2735"]
+            health=[event1, event2],
+            doctors=["hw2735", "fyy1010"]
         )
         self.auth_token = auth.encode_auth_token(self.patient.id, "PATIENT")
 
@@ -55,7 +67,7 @@ class MockHCP(object):
             profilePicture='',
             calendar=['aoc1989,hw2735,1605841671.366644'],
             title='Resident',
-            patients=[''],
+            patients=['aoc1989'],
             hours=schedule)
         self.auth_token = auth.encode_auth_token(self.hcp.id, "HCP")
 

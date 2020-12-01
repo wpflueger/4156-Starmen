@@ -28,6 +28,7 @@ Patient Endpoint Tests
 
 
 class PatientTestCase(unittest.TestCase):
+    # Mock statements for template use
     # db = Mock()
     # set_func = Mock()
     # set_func.to_dict = MagicMock(return_value=default_value_1)
@@ -102,7 +103,7 @@ class PatientTestCase(unittest.TestCase):
         res = pat_edit_profile(db, mockpatient.patient.id, payload)
         self.assertIsNotNone(res)
 
-    def pat_get_records(self):
+    def test_pat_get_records(self):
         db = Mock()
         set_func = Mock()
         set_func.to_dict = MagicMock(return_value=mockpatient.patient.to_dict())
@@ -121,9 +122,9 @@ class PatientTestCase(unittest.TestCase):
 
         db2 = Mock()
         set_func2 = Mock()
-        set_func.to_dict = MagicMock(return_value=mockhcp.hcp.to_dict())
-        set_func.set = MagicMock(return_value=default_value_1)
-        set_func.get = MagicMock(return_value=mockhcp.hcp)
+        set_func2.to_dict = MagicMock(return_value=mockhcp.hcp.to_dict())
+        set_func2.set = MagicMock(return_value=default_value_1)
+        set_func2.get = MagicMock(return_value=mockhcp.hcp)
         db2.document = MagicMock(return_value=set_func2)
         res = pat_get_hcps(db, db2, mockpatient.patient.id)
         self.assertIsNotNone(res)
@@ -134,9 +135,10 @@ class PatientTestCase(unittest.TestCase):
         set_func.to_dict = MagicMock(return_value=mockpatient.patient.to_dict())
         set_func.set = MagicMock(return_value=default_value_1)
         set_func.get = MagicMock(return_value=mockpatient.patient)
+        db.stream = MagicMock(return_value=[mockpatient.patient, mockpatient.patient])
         db.document = MagicMock(return_value=set_func)
         res = pat_get_all(db)
-        self.assertEqual(res, 2)
+        self.assertEqual(len(res), 2)
 
     def test_set_profile_picture(self):
         db = Mock()
