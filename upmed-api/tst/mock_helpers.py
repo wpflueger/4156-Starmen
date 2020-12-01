@@ -111,3 +111,38 @@ class MockAppointment(object):
             subject='psychiatry',
             notes='notes',
             videoUrl='url')
+
+
+class MockParticipant(object):
+    participant: str
+
+    def __init__(self):
+        self.participant = 'mock'
+
+    def create(self, identity):
+        pass
+
+
+class MockConversation(object):
+    participants: MockParticipant
+    chat_service_sid: str
+
+    def __init__(self):
+        self.participants = MockParticipant()
+        self.chat_service_sid = 'mock sid'
+
+
+class jwt(object):
+    def decode(self):
+        return 'mock twilio token'
+
+
+class MockTwilioToken(object):
+    token: jwt
+
+    def add_grant(self, room):
+        pass
+
+    def to_jwt(self):
+        self.token = jwt()
+        return self.token

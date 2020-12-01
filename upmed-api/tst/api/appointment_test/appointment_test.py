@@ -1,7 +1,7 @@
 import unittest
 import time
 from src import Patient, HCP, Day, Hours, Status, Appointment, Auth  # noqa
-from tst.mock_helpers import MockHCP, MockPatient, MockAppointment
+from tst.mock_helpers import MockHCP, MockPatient, MockAppointment, MockConversation, MockTwilioToken
 from unittest.mock import MagicMock, Mock, patch
 from sys import path
 from os.path import join, dirname
@@ -16,7 +16,8 @@ appointment_token = 'aoc1989,hw2735,1605841671.366644'
 mockpatient = MockPatient()
 mockhcp = MockHCP()
 mockappointment = MockAppointment()
-
+mockconversation = MockConversation()
+mocktwiliotoken = MockTwilioToken()
 path.append(join(dirname(__file__), '../../..'))
 
 """
@@ -144,6 +145,23 @@ class AppointmentTestCase(unittest.TestCase):
         response, status_code = appointment_helper.appointment_get_calendar(payload)
         self.assertEqual(401, status_code)
 
+    @patch("api.appointment_helper.twilio.access_token",
+           return_value=mocktwiliotoken)
+    @patch("api.appointment_helper.appointmentsdb.document",
+           return_value=mockappointment.appointment)
+    @patch("api.appointment_helper.get_chatroom",
+           return_value=mockconversation)
+    def test_video(self, mock_get_chatroom, mock_document, mock_twilio_token):
+        from src.api.appointment import appointment_helper
+        payload = {
+            'token': mockhcp.auth_token,
+            'appointmentId': appointment_token,
+        }
+        response, status_code = appointment_helper.video(payload)
+        self.assertEqual(200, status_code)
+        self.assertTrue(mock_get_chatroom.called, "mock_get_chatroom not being called")
+        self.assertTrue(mock_document.called, "mock_document not being called")
+        self.assertTrue(mock_twilio_token.called, "mock_twilio_token not being called")
 
 if __name__ == '__main__':
     unittest.main()

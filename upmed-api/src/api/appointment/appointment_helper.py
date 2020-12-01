@@ -6,7 +6,6 @@ from os.path import join, dirname
 
 
 from twilio.jwt.access_token.grants import VideoGrant, ChatGrant
-from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 
 path.append(join(dirname(__file__), '../../..'))
@@ -307,16 +306,14 @@ def video(post_data):
         appointment_id = post_data.get('appointmentId')
         appointments_output = appointmentsdb.document(
             str(appointment_id)).get().to_dict()
-        print(appointments_output)
         if not (pid == appointments_output['patient'] or pid == appointments_output['doctor']):
             response_object ={
                 "Success": False,
-                "message": "Id not in appointment, unable to access room"
+                "message": "ID not in appointment, unable to access room"
             }
             return response_object, 401
 
         conversation = get_chatroom(str(appointment_id))
-
         try:
             conversation.participants.create(identity=pid)
         except TwilioRestException as exc:

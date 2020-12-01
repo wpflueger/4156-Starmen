@@ -26,7 +26,7 @@ def pat_login(db, pid, email):
         res = res.to_dict()
         if res['email'] == email:
             utype = "PATIENT"
-            auth_token = auth.encode_auth_token(pid, utype)
+            auth_token = auth
             resp = {
                 "id": pid,
                 "token": auth_token.decode()
@@ -63,7 +63,7 @@ def pat_signup(pat, patient):
         "doctors": patient.doctors
     })
     if res:
-        auth_token = auth.encode_auth_token(patient.id, utype)
+        auth_token = auth
         return auth_token.decode()
     else:
         return 0

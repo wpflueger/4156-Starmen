@@ -35,7 +35,7 @@ def hcp_login(db, pid, email):
         res = res.to_dict()
         if res['email'] == email:
             utype = "HCP"
-            auth_token = auth.encode_auth_token(pid, utype)
+            auth_token = auth
             resp = {
                 "id": pid,
                 "token": auth_token.decode()
@@ -73,7 +73,7 @@ def hcp_signup(db, hcp, hours, npi):
         "patients": hcp.patients
     })
     if res:
-        auth_token = auth.encode_auth_token(hcp.id, utype)
+        auth_token = auth
         return auth_token.decode()
     else:
         return 0
